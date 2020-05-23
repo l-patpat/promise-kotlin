@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a199c751-2331-4f14-800d-153ddec3bc78" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Kotlin Class" />
+        <option value="Interface" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1c4uKl1FUOOv0OC4x76BL6cmXUx" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="File.Encoding" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="aya.patpat.promise.action" />
+      <recent name="aya.patpat.promise" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="aya.patpat.promise.action" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="P:\Projects\promise-kotlin\src\main\kotlin\aya\patpat\promise" />
+      <recent name="P:\Projects\promise-kotlin\src\main\java\aya\patpat\promise\action" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.promise-kotlin [build]">
+    <configuration name="TestKotlin.test" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.test&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="TestKotlin.testGlobalScope" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.testGlobalScope&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="promise-kotlin [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.promise-kotlin [build]" />
+        <item itemvalue="Gradle.TestKotlin.testGlobalScope" />
+        <item itemvalue="Gradle.TestKotlin.test" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a199c751-2331-4f14-800d-153ddec3bc78" name="Default Changelist" comment="" />
+      <created>1589800124302</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1589800124302</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="478" y="114" key="#Project_Structure" timestamp="1590229313688">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state x="478" y="114" key="#Project_Structure/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590229313688" />
+    <state x="744" y="256" key="#com.intellij.ide.util.MemberChooser" timestamp="1589859061975">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state x="744" y="256" key="#com.intellij.ide.util.MemberChooser/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1589859061975" />
+    <state x="-671" y="904" width="447" height="486" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1589900008645">
+      <screen x="-1080" y="180" width="1080" height="1920" />
+    </state>
+    <state x="-671" y="904" width="447" height="486" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/77.0.1843.1080/-1080.180.1080.1920@-1080.180.1080.1920" timestamp="1589900008645" />
+    <state x="775" y="407" width="447" height="273" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1589858304879" />
+    <state x="728" y="286" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1590220057622">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state x="728" y="286" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590220057622" />
+    <state width="1800" height="364" key="GridCell.Tab.0.bottom" timestamp="1590230378580">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state width="1800" height="364" key="GridCell.Tab.0.bottom/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
+    <state width="1800" height="364" key="GridCell.Tab.0.center" timestamp="1590230378580">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state width="1800" height="364" key="GridCell.Tab.0.center/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
+    <state width="1800" height="364" key="GridCell.Tab.0.left" timestamp="1590230378579">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state width="1800" height="364" key="GridCell.Tab.0.left/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378579" />
+    <state width="1800" height="364" key="GridCell.Tab.0.right" timestamp="1590230378580">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state width="1800" height="364" key="GridCell.Tab.0.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
+    <state width="1800" height="364" key="GridCell.Tab.1.bottom" timestamp="1590230378580">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state width="1800" height="364" key="GridCell.Tab.1.bottom/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
+    <state width="1800" height="364" key="GridCell.Tab.1.center" timestamp="1590230378580">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state width="1800" height="364" key="GridCell.Tab.1.center/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
+    <state width="1800" height="364" key="GridCell.Tab.1.left" timestamp="1590230378580">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state width="1800" height="364" key="GridCell.Tab.1.left/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
+    <state width="1800" height="364" key="GridCell.Tab.1.right" timestamp="1590230378580">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state width="1800" height="364" key="GridCell.Tab.1.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
+    <state x="147" y="229" key="SettingsEditor" timestamp="1589894000794">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state x="-1039" y="784" key="SettingsEditor/77.0.1843.1080/-1080.180.1080.1920@-1080.180.1080.1920" timestamp="1589889314863" />
+    <state x="147" y="229" key="SettingsEditor/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1589894000794" />
+    <state x="655" y="250" key="run.anything.popup" timestamp="1590020595871">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state x="655" y="250" key="run.anything.popup/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590020595871" />
+    <state x="661" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1589860299156">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state x="661" y="235" width="672" height="678" key="search.everywhere.popup/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1589860299156" />
+  </component>
+</project>
