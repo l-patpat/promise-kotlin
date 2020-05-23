@@ -30,12 +30,12 @@ compileTestKotlin {
 }
 
 group 'aya.patpat'
-version '0.0.1'
+version '0.0.1' // master branch
 
 publish {
     userOrg = 'l-patpat'
     groupId = "$group"
-    artifactId = 'promise'
+    artifactId = 'promise' // master branch
     publishVersion = "$version"
     desc = 'Promise for kotlin/java/android'
     website = 'https://github.com/l-patpat/promise-kotlin'
