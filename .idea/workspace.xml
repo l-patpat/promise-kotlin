@@ -43,10 +43,10 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="File.Encoding" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -155,6 +155,10 @@
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state x="728" y="286" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590220057622" />
+    <state x="465" y="355" key="FileChooserDialogImpl" timestamp="1593768557259">
+      <screen x="77" y="0" width="1843" height="1080" />
+    </state>
+    <state x="465" y="355" key="FileChooserDialogImpl/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1593768557259" />
     <state width="1800" height="364" key="GridCell.Tab.0.bottom" timestamp="1590230378580">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
@@ -187,11 +191,11 @@
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="364" key="GridCell.Tab.1.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
-    <state x="147" y="229" key="SettingsEditor" timestamp="1589894000794">
+    <state x="165" y="175" key="SettingsEditor" timestamp="1593768576461">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state x="-1039" y="784" key="SettingsEditor/77.0.1843.1080/-1080.180.1080.1920@-1080.180.1080.1920" timestamp="1589889314863" />
-    <state x="147" y="229" key="SettingsEditor/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1589894000794" />
+    <state x="165" y="175" key="SettingsEditor/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1593768576461" />
     <state x="655" y="250" key="run.anything.popup" timestamp="1590020595871">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>

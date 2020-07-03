@@ -37,7 +37,7 @@ class Promise {
         }
 
         @JvmStatic
-        fun handelResult(result: GlobalResult.Normal<*>) {
+        fun handleResult(result: GlobalResult.Normal<*>) {
             if (result.isSuccess) {
                 resolve(result.id, result.data)
             } else {
