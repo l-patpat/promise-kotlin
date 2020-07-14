@@ -2,9 +2,7 @@ package aya.patpat.promise
 
 import aya.patpat.promise.action.Action
 import aya.patpat.result.GlobalResult
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -56,7 +54,6 @@ class Promise {
         }
     }
 
-
     val id = System.nanoTime()
 
     private var nName = ""
@@ -69,12 +66,19 @@ class Promise {
     var retryTimes = 0
         private set
 
+    private object mFlags {
+        var launch = false
+        var extern = false
+        var resolve = false
+        var reject = false
+    }
     private var mState = STATE_INIT
     private var mTimeoutFuture: ScheduledFuture<*>? = null
     private var mTimeoutMillis = 0L
     private val mLaunchAction: Action<Promise>
     private val mLaunchDispatcher: PromiseDispatcher
     private var mLaunchJob: Job? = null
+    private var mLaunchBlock: suspend CoroutineScope.() -> Unit = {}
     private lateinit var mResolveAction: Action<Any?>
     private lateinit var mRejectAction: Action<GlobalResult>
     private var mResult: GlobalResult? = null
@@ -110,22 +114,30 @@ class Promise {
 
     fun close() {
         synchronized(mState) {
-            when (mState) {
-                STATE_CLOSE -> return
-                STATE_RESOLVE, STATE_REJECT -> {}
-                else -> notifyResult(GlobalResult.Abort())
-            }
-            mState = STATE_CLOSE
-            mLaunchJob?.cancel()
-            mTimeoutFuture?.cancel(true)
-            mTimeoutFuture = null
-            sPromiseMap.remove(id)
+            closeReal()
         }
     }
 
+    private fun closeReal() {
+        when (mState) {
+            STATE_CLOSE -> return
+            STATE_RESOLVE, STATE_REJECT -> {}
+            else -> notifyResult(GlobalResult.Abort())
+        }
+        mState = STATE_CLOSE
+        mLaunchJob?.cancel()
+        mLaunchBlock = {}
+        mTimeoutFuture?.cancel(true)
+        mTimeoutFuture = null
+        sPromiseMap.remove(id)
+    }
+
     fun extern() {
-        if (isFinished()) return
-        sPromiseMap[id] = this
+        synchronized(mState) {
+            if (isFinished()) return
+            sPromiseMap[id] = this
+            mFlags.extern = true
+        }
     }
 
     fun retry(times: Int): Promise {
@@ -179,16 +191,31 @@ class Promise {
 
         if (mAllowRetryTimes < 0) mAllowRetryTimes = 0
         retryTimes = 0
-        mLaunchJob = GlobalScope.launch(mLaunchDispatcher.instance) {
-            while(shouldLaunch()) {
-                startTimeoutCount()
-                try {
+        mFlags.extern = false
+        mLaunchBlock = {
+            try {
+                var state: Int
+                do {
+                    startTimeoutCount()
+                    mState = STATE_LAUNCH
+                    mFlags.resolve = false
+                    mFlags.reject = false
+                    mFlags.launch = true
                     mLaunchAction.run(this@Promise)
-                } catch (e: Exception) {
-                    reject(GlobalResult.ErrInternal(e.message.toString()))
-                }
+                    synchronized(mState) {
+                        mFlags.launch = false
+                        if (!mFlags.extern && !mFlags.resolve && !mFlags.reject) {
+                            mLaunchJob = null
+                            closeReal()
+                        }
+                        state = mState
+                    }
+                } while (state == STATE_RETRY)
+            } catch (e: Exception) {
+                reject(GlobalResult.ErrInternal(e.message.toString()))
             }
         }
+        mLaunchJob = GlobalScope.launch(mLaunchDispatcher.instance, CoroutineStart.DEFAULT, mLaunchBlock)
 
         if (!await) return null
 
@@ -216,6 +243,7 @@ class Promise {
     fun resolve(data: Any?) {
         synchronized(mState) {
             if (mState != STATE_LAUNCH) return
+            mFlags.resolve = true
             mState = STATE_RESOLVE
             mResolveAction.run(data)
         }
@@ -225,9 +253,15 @@ class Promise {
     fun reject(err: GlobalResult) {
         synchronized(mState) {
             if (mState != STATE_LAUNCH) return
+            mFlags.resolve = true
             if (retryTimes < mAllowRetryTimes) {
                 retryTimes++
-                mState = STATE_RETRY
+                if (mFlags.launch) {
+                    mState = STATE_RETRY
+                } else {
+                    mState = STATE_LAUNCH
+                    mLaunchJob = GlobalScope.launch(mLaunchDispatcher.instance, CoroutineStart.DEFAULT, mLaunchBlock)
+                }
                 return
             }
             mState = STATE_REJECT
