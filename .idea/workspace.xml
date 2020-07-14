@@ -42,10 +42,11 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../global-result-java" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
@@ -61,13 +62,13 @@
       <recent name="P:\Projects\promise-kotlin\src\main\java\aya\patpat\promise\action" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.promise-kotlin [build]">
-    <configuration name="TestKotlin.test" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+  <component name="RunManager" selected="Gradle.TestKotlin.testAll">
+    <configuration name="TestKotlin.testAll" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.test&quot;" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.testAll&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -81,12 +82,12 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="TestKotlin.testGlobalScope" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestKotlin.testReject" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.testGlobalScope&quot;" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.testReject&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -100,30 +101,70 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="promise-kotlin [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestKotlin.testRetry" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.testRetry&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
         <option name="taskNames">
           <list>
-            <option value="build" />
+            <option value=":test" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="TestKotlin.testRetryResolve" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.testRetryResolve&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="TestKotlin.testTimeout" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.testTimeout&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.promise-kotlin [build]" />
-        <item itemvalue="Gradle.TestKotlin.testGlobalScope" />
-        <item itemvalue="Gradle.TestKotlin.test" />
+        <item itemvalue="Gradle.TestKotlin.testAll" />
+        <item itemvalue="Gradle.TestKotlin.testRetryResolve" />
+        <item itemvalue="Gradle.TestKotlin.testRetry" />
+        <item itemvalue="Gradle.TestKotlin.testTimeout" />
+        <item itemvalue="Gradle.TestKotlin.testReject" />
       </list>
     </recent_temporary>
   </component>
@@ -155,42 +196,42 @@
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state x="728" y="286" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590220057622" />
-    <state x="465" y="355" key="FileChooserDialogImpl" timestamp="1593768557259">
+    <state x="465" y="355" key="FileChooserDialogImpl" timestamp="1594700842530">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state x="465" y="355" key="FileChooserDialogImpl/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1593768557259" />
-    <state width="1800" height="364" key="GridCell.Tab.0.bottom" timestamp="1590230378580">
+    <state x="465" y="355" key="FileChooserDialogImpl/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594700842530" />
+    <state width="1800" height="368" key="GridCell.Tab.0.bottom" timestamp="1594733758735">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state width="1800" height="364" key="GridCell.Tab.0.bottom/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
-    <state width="1800" height="364" key="GridCell.Tab.0.center" timestamp="1590230378580">
+    <state width="1800" height="368" key="GridCell.Tab.0.bottom/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594733758735" />
+    <state width="1800" height="368" key="GridCell.Tab.0.center" timestamp="1594733758735">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state width="1800" height="364" key="GridCell.Tab.0.center/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
-    <state width="1800" height="364" key="GridCell.Tab.0.left" timestamp="1590230378579">
+    <state width="1800" height="368" key="GridCell.Tab.0.center/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594733758735" />
+    <state width="1800" height="368" key="GridCell.Tab.0.left" timestamp="1594733758734">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state width="1800" height="364" key="GridCell.Tab.0.left/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378579" />
-    <state width="1800" height="364" key="GridCell.Tab.0.right" timestamp="1590230378580">
+    <state width="1800" height="368" key="GridCell.Tab.0.left/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594733758734" />
+    <state width="1800" height="368" key="GridCell.Tab.0.right" timestamp="1594733758735">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state width="1800" height="364" key="GridCell.Tab.0.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
-    <state width="1800" height="364" key="GridCell.Tab.1.bottom" timestamp="1590230378580">
+    <state width="1800" height="368" key="GridCell.Tab.0.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594733758735" />
+    <state width="1800" height="364" key="GridCell.Tab.1.bottom" timestamp="1594733278018">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state width="1800" height="364" key="GridCell.Tab.1.bottom/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
-    <state width="1800" height="364" key="GridCell.Tab.1.center" timestamp="1590230378580">
+    <state width="1800" height="364" key="GridCell.Tab.1.bottom/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594733278018" />
+    <state width="1800" height="364" key="GridCell.Tab.1.center" timestamp="1594733278018">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state width="1800" height="364" key="GridCell.Tab.1.center/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
-    <state width="1800" height="364" key="GridCell.Tab.1.left" timestamp="1590230378580">
+    <state width="1800" height="364" key="GridCell.Tab.1.center/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594733278018" />
+    <state width="1800" height="364" key="GridCell.Tab.1.left" timestamp="1594733278018">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state width="1800" height="364" key="GridCell.Tab.1.left/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
-    <state width="1800" height="364" key="GridCell.Tab.1.right" timestamp="1590230378580">
+    <state width="1800" height="364" key="GridCell.Tab.1.left/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594733278018" />
+    <state width="1800" height="364" key="GridCell.Tab.1.right" timestamp="1594733278018">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state width="1800" height="364" key="GridCell.Tab.1.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590230378580" />
+    <state width="1800" height="364" key="GridCell.Tab.1.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594733278018" />
     <state x="165" y="175" key="SettingsEditor" timestamp="1593768576461">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
