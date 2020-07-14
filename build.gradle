@@ -30,7 +30,7 @@ compileTestKotlin {
 }
 
 group 'aya.patpat'
-version '0.0.3' // test branch
+version '0.0.4' // test branch
 
 publish {
     userOrg = 'l-patpat'
