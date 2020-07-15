@@ -85,7 +85,7 @@ class TestKotlin {
             countThen++
             println("onThen count:$countThen")
         }.onCatch {
-            if (it.result == GlobalResult.ERR_INTERNAL) {
+            if (it.`is`(GlobalResult.ERR_INTERNAL)) {
                 countCatch++
                 println("onCatch count:$countCatch")
             } else {
@@ -117,7 +117,7 @@ class TestKotlin {
         }.onCatch {
             val time = System.currentTimeMillis() - startTime
             println("onCatch timeout:${time}ms")
-            if (it.result == GlobalResult.ERR_TIMEOUT && abs(time - 200) < 40) {
+            if (it.`is`(GlobalResult.TIMEOUT) && abs(time - 200) < 40) {
                 countCatch++
                 println("onCatch count:$countCatch")
             }
@@ -153,7 +153,7 @@ class TestKotlin {
                 println("onThen invalid params:${it ?: "null"}")
             }
         }.onCatch {
-            if (it.result == GlobalResult.ERR_INTERNAL) {
+            if (it.`is`(GlobalResult.ERR_INTERNAL)) {
                 countCatch++
                 println("onCatch count:$countCatch")
             } else {
@@ -182,7 +182,7 @@ class TestKotlin {
             countThen++
             println("onThen count:$countThen")
         }.onCatch {
-            if (it.result == GlobalResult.ERR_INTERNAL) {
+            if (it.`is`(GlobalResult.ERR_INTERNAL)) {
                 countCatch++
                 println("onCatch count:$countCatch")
             } else {
