@@ -17,8 +17,9 @@ class Promise {
         private const val STATE_REJECT = 4
         private const val STATE_CLOSE = 5
 
+        private val sIdFactory = IdFactory(12 * 24 * 60 * 60)
         private val sTimeoutThreadPool = Executors.newScheduledThreadPool(1)
-        private val sPromiseMap = HashMap<Long, Promise>()
+        private val sPromiseMap = HashMap<Int, Promise>()
 
         @JvmStatic
         inline fun <reified T : Any>parseData(result: GlobalResult?): T? {
@@ -37,24 +38,24 @@ class Promise {
         @JvmStatic
         fun handleResult(result: GlobalResult.Normal<*>) {
             if (result.isSuccess) {
-                resolve(result.id, result.data)
+                resolve(result.id.toInt(), result.data)
             } else {
-                reject(result.id, result)
+                reject(result.id.toInt(), result)
             }
         }
 
         @JvmStatic
-        fun resolve(id: Long, data: Any? = null) {
+        fun resolve(id: Int, data: Any? = null) {
             sPromiseMap[id]?.resolve(data)
         }
 
         @JvmStatic
-        fun reject(id: Long, err: GlobalResult) {
+        fun reject(id: Int, err: GlobalResult) {
             sPromiseMap[id]?.reject(err)
         }
     }
 
-    val id = System.nanoTime()
+    val id = generateId()
 
     private var nName = ""
     val name: String
@@ -148,6 +149,14 @@ class Promise {
     fun timeout(timeoutMillis: Long): Promise {
         mTimeoutMillis = timeoutMillis
         return this
+    }
+
+    private fun generateId(): Int {
+        var id: Int
+        do {
+            id = sIdFactory.generate()
+        } while (sPromiseMap[id] != null)
+        return id
     }
 
     private fun makeSuccessResult(data: Any?): GlobalResult {

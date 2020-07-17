@@ -4,7 +4,7 @@ import aya.patpat.result.GlobalResult
 import org.junit.Test
 import kotlin.math.abs
 
-class TestKotlin {
+class TestPromise {
 
     @Test
     fun testAll() {
@@ -140,7 +140,7 @@ class TestKotlin {
         Promise {
             countLaunch++
             println("launch count:$countLaunch")
-            if (it.retryTimes < 9) {
+            if (it.retryTimes < 3) {
                 it.reject(GlobalResult.ErrInternal())
             } else {
                 it.resolve("aaa")
@@ -159,11 +159,11 @@ class TestKotlin {
             } else {
                 println("onCatch invalid error:${it.result}")
             }
-        }.retry(9).launch()
+        }.retry(3).launch()
 
         Thread.sleep(100)
         println("testRetryResolve stop")
-        assert(countLaunch == 10 && countThen == 1 && countCatch == 0)
+        assert(countLaunch == 4 && countThen == 1 && countCatch == 0)
     }
 
     @Test
@@ -193,5 +193,39 @@ class TestKotlin {
         Thread.sleep(100)
         println("testRetryReject stop")
         assert(countLaunch == 10 && countThen == 0 && countCatch == 1)
+    }
+
+    @Test
+    fun testExternResolve() {
+//        println("testRetryReject start")
+//
+//        var countLaunch = 0
+//        var countThen = 0
+//        var countCatch = 0
+//        val id: Long
+//        Promise {
+//            it.extern()
+//        }.onThen {
+//
+//        }.onCatch {
+//
+//        }.launch()
+//
+//        Thread.sleep(100)
+//        println("testRetryReject stop")
+//        assert(countLaunch == 10 && countThen == 0 && countCatch == 1)
+    }
+
+    @Test
+    fun testId() {
+        Promise { System.out.printf("%08X\n", it.id) }.launch()
+        Promise { System.out.printf("%08X\n", it.id) }.launch()
+        Promise { System.out.printf("%08X\n", it.id) }.launch()
+        Promise { System.out.printf("%08X\n", it.id) }.launch()
+        Promise { System.out.printf("%08X\n", it.id) }.launch()
+        Promise { System.out.printf("%08X\n", it.id) }.launch()
+        Promise { System.out.printf("%08X\n", it.id) }.launch()
+        Promise { System.out.printf("%08X\n", it.id) }.launch()
+        Thread.sleep(100)
     }
 }
