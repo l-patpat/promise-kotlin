@@ -314,4 +314,22 @@ class Promise {
         }
         return this
     }
+    fun onCatchLog(): Promise = onCatchLog(true)
+    fun onCatchLog(debug: Boolean): Promise {
+        return if (debug) {
+            onCatch {
+                val sb = StringBuilder()
+                sb.appendln()
+                sb.appendln("----------------------------------------")
+                sb.appendln("<promise: ${if (name.isEmpty()) hashCode().toString(16) else name }>")
+                sb.appendln("onCatch")
+                sb.appendln("resultId: ${it.id}")
+                sb.appendln("result: ${it.result}")
+                sb.appendln("msg: ${it.msg}")
+                sb.appendln("----------------------------------------")
+                println(sb.toString())
+            }
+        } else this
+
+    }
 }

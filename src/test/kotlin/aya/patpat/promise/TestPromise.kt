@@ -228,4 +228,12 @@ class TestPromise {
         Promise { System.out.printf("%08X\n", it.id) }.launch()
         Thread.sleep(100)
     }
+
+    @Test
+    fun testCatchLog() {
+        Promise {
+            it.reject(GlobalResult.Cancel())
+        }.onCatchLog().launch()
+        Thread.sleep(100)
+    }
 }
