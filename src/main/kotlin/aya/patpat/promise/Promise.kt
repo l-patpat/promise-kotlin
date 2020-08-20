@@ -2,9 +2,7 @@ package aya.patpat.promise
 
 import aya.patpat.promise.action.Action
 import aya.patpat.result.GlobalResult
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -19,8 +17,9 @@ class Promise {
         private const val STATE_REJECT = 4
         private const val STATE_CLOSE = 5
 
+        private val sIdFactory = IdFactory(12 * 24 * 60 * 60)
         private val sTimeoutThreadPool = Executors.newScheduledThreadPool(1)
-        private val sPromiseMap = HashMap<Long, Promise>()
+        private val sPromiseMap = HashMap<Int, Promise>()
 
         @JvmStatic
         inline fun <reified T : Any>parseData(result: GlobalResult?): T? {
@@ -37,27 +36,26 @@ class Promise {
         }
 
         @JvmStatic
-        fun handelResult(result: GlobalResult.Normal<*>) {
+        fun handleResult(result: GlobalResult.Normal<*>) {
             if (result.isSuccess) {
-                resolve(result.id, result.data)
+                resolve(result.id.toInt(), result.data)
             } else {
-                reject(result.id, result)
+                reject(result.id.toInt(), result)
             }
         }
 
         @JvmStatic
-        fun resolve(id: Long, data: Any? = null) {
+        fun resolve(id: Int, data: Any? = null) {
             sPromiseMap[id]?.resolve(data)
         }
 
         @JvmStatic
-        fun reject(id: Long, err: GlobalResult) {
+        fun reject(id: Int, err: GlobalResult) {
             sPromiseMap[id]?.reject(err)
         }
     }
 
-
-    val id = System.nanoTime()
+    val id = generateId()
 
     private var nName = ""
     val name: String
@@ -69,12 +67,19 @@ class Promise {
     var retryTimes = 0
         private set
 
+    private object mFlags {
+        var launch = false
+        var extern = false
+        var resolve = false
+        var reject = false
+    }
     private var mState = STATE_INIT
     private var mTimeoutFuture: ScheduledFuture<*>? = null
     private var mTimeoutMillis = 0L
     private val mLaunchAction: Action<Promise>
     private val mLaunchDispatcher: PromiseDispatcher
     private var mLaunchJob: Job? = null
+    private var mLaunchBlock: suspend CoroutineScope.() -> Unit = {}
     private lateinit var mResolveAction: Action<Any?>
     private lateinit var mRejectAction: Action<GlobalResult>
     private var mResult: GlobalResult? = null
@@ -110,22 +115,30 @@ class Promise {
 
     fun close() {
         synchronized(mState) {
-            when (mState) {
-                STATE_CLOSE -> return
-                STATE_RESOLVE, STATE_REJECT -> {}
-                else -> notifyResult(GlobalResult.Abort())
-            }
-            mState = STATE_CLOSE
-            mLaunchJob?.cancel()
-            mTimeoutFuture?.cancel(true)
-            mTimeoutFuture = null
-            sPromiseMap.remove(id)
+            closeReal()
         }
     }
 
+    private fun closeReal() {
+        when (mState) {
+            STATE_CLOSE -> return
+            STATE_RESOLVE, STATE_REJECT -> {}
+            else -> notifyResult(GlobalResult.Abort())
+        }
+        mState = STATE_CLOSE
+        mLaunchJob?.cancel()
+        mLaunchBlock = {}
+        mTimeoutFuture?.cancel(true)
+        mTimeoutFuture = null
+        sPromiseMap.remove(id)
+    }
+
     fun extern() {
-        if (isFinished()) return
-        sPromiseMap[id] = this
+        synchronized(mState) {
+            if (isFinished()) return
+            sPromiseMap[id] = this
+            mFlags.extern = true
+        }
     }
 
     fun retry(times: Int): Promise {
@@ -136,6 +149,14 @@ class Promise {
     fun timeout(timeoutMillis: Long): Promise {
         mTimeoutMillis = timeoutMillis
         return this
+    }
+
+    private fun generateId(): Int {
+        var id: Int
+        do {
+            id = sIdFactory.generate()
+        } while (sPromiseMap[id] != null)
+        return id
     }
 
     private fun makeSuccessResult(data: Any?): GlobalResult {
@@ -179,16 +200,31 @@ class Promise {
 
         if (mAllowRetryTimes < 0) mAllowRetryTimes = 0
         retryTimes = 0
-        mLaunchJob = GlobalScope.launch(mLaunchDispatcher.instance) {
-            while(shouldLaunch()) {
-                startTimeoutCount()
-                try {
+        mFlags.extern = false
+        mLaunchBlock = {
+            try {
+                var state: Int
+                do {
+                    startTimeoutCount()
+                    mState = STATE_LAUNCH
+                    mFlags.resolve = false
+                    mFlags.reject = false
+                    mFlags.launch = true
                     mLaunchAction.run(this@Promise)
-                } catch (e: Exception) {
-                    reject(GlobalResult.ErrInternal(e.message.toString()))
-                }
+                    synchronized(mState) {
+                        mFlags.launch = false
+                        if (!mFlags.extern && !mFlags.resolve && !mFlags.reject) {
+                            mLaunchJob = null
+                            closeReal()
+                        }
+                        state = mState
+                    }
+                } while (state == STATE_RETRY)
+            } catch (e: Exception) {
+                reject(GlobalResult.ErrInternal(e.message.toString()))
             }
         }
+        mLaunchJob = GlobalScope.launch(mLaunchDispatcher.instance, CoroutineStart.DEFAULT, mLaunchBlock)
 
         if (!await) return null
 
@@ -216,6 +252,7 @@ class Promise {
     fun resolve(data: Any?) {
         synchronized(mState) {
             if (mState != STATE_LAUNCH) return
+            mFlags.resolve = true
             mState = STATE_RESOLVE
             mResolveAction.run(data)
         }
@@ -225,9 +262,15 @@ class Promise {
     fun reject(err: GlobalResult) {
         synchronized(mState) {
             if (mState != STATE_LAUNCH) return
+            mFlags.resolve = true
             if (retryTimes < mAllowRetryTimes) {
                 retryTimes++
-                mState = STATE_RETRY
+                if (mFlags.launch) {
+                    mState = STATE_RETRY
+                } else {
+                    mState = STATE_LAUNCH
+                    mLaunchJob = GlobalScope.launch(mLaunchDispatcher.instance, CoroutineStart.DEFAULT, mLaunchBlock)
+                }
                 return
             }
             mState = STATE_REJECT
@@ -270,5 +313,23 @@ class Promise {
             }
         }
         return this
+    }
+    fun onCatchLog(): Promise = onCatchLog(true)
+    fun onCatchLog(debug: Boolean): Promise {
+        return if (debug) {
+            onCatch {
+                val sb = StringBuilder()
+                sb.appendln()
+                sb.appendln("----------------------------------------")
+                sb.appendln("<promise: ${if (name.isEmpty()) hashCode().toString(16) else name }>")
+                sb.appendln("onCatch")
+                sb.appendln("resultId: ${it.id}")
+                sb.appendln("result: ${it.result}")
+                sb.appendln("msg: ${it.msg}")
+                sb.appendln("----------------------------------------")
+                println(sb.toString())
+            }
+        } else this
+
     }
 }
