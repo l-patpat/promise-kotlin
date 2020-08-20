@@ -17,7 +17,7 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0"
-    api 'aya.patpat:global-result:0.0.1' // master branch
+    api 'aya.patpat:global-result:0.0.2' // master branch
 
     testImplementation 'junit:junit:4.12'
 }
@@ -30,7 +30,7 @@ compileTestKotlin {
 }
 
 group 'aya.patpat'
-version '0.0.2' // master branch
+version '0.0.3' // master branch
 
 publish {
     userOrg = 'l-patpat'

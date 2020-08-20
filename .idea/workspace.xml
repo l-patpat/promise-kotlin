@@ -63,7 +63,7 @@
       <recent name="P:\Projects\promise-kotlin\src\main\java\aya\patpat\promise\action" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.TestPromise.testCatchLog">
+  <component name="RunManager" selected="Gradle.TestPromise.testAll">
     <configuration name="TestIdFactory.testRepeat" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -83,12 +83,12 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="TestKotlin.test" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestPromise.testAll" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.test&quot;" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestPromise.testAll&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -161,11 +161,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.TestPromise.testAll" />
         <item itemvalue="Gradle.TestPromise.testCatchLog" />
         <item itemvalue="Gradle.TestPromise.testId" />
         <item itemvalue="Gradle.TestPromise.testRetryReject" />
         <item itemvalue="Gradle.TestIdFactory.testRepeat" />
-        <item itemvalue="Gradle.TestKotlin.test" />
       </list>
     </recent_temporary>
   </component>
