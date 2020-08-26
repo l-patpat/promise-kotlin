@@ -48,7 +48,7 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="File.Encoding" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -233,11 +233,11 @@
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="364" key="GridCell.Tab.1.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844579375" />
-    <state x="165" y="175" key="SettingsEditor" timestamp="1593768576461">
+    <state x="165" y="175" key="SettingsEditor" timestamp="1598435976850">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state x="-1039" y="784" key="SettingsEditor/77.0.1843.1080/-1080.180.1080.1920@-1080.180.1080.1920" timestamp="1589889314863" />
-    <state x="165" y="175" key="SettingsEditor/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1593768576461" />
+    <state x="165" y="175" key="SettingsEditor/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1598435976850" />
     <state x="655" y="250" key="run.anything.popup" timestamp="1590020595871">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>

@@ -2,6 +2,7 @@ package aya.patpat.promise
 
 import aya.patpat.promise.action.Action
 import aya.patpat.result.GlobalResult
+import aya.patpat.result.GlobalResultException
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
@@ -220,6 +221,8 @@ class Promise {
                         state = mState
                     }
                 } while (state == STATE_RETRY)
+            } catch (e: GlobalResultException) {
+                reject(e.result)
             } catch (e: Exception) {
                 reject(GlobalResult.ErrInternal(e.message.toString()))
             }
