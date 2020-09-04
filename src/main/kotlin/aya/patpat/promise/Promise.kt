@@ -86,6 +86,7 @@ class Promise {
     private var mResult: GlobalResult? = null
     private val mAwaitLock = Object()
 
+    constructor() : this(Dispatchers.Default, "", Action<Promise> { })
     constructor(func: (promise: Promise) -> Unit) : this(Dispatchers.Default, "", Action<Promise> { func(it) })
     constructor(action: Action<Promise>) : this(Dispatchers.Default, "", action)
     constructor(name: String, func: (promise: Promise) -> Unit) : this(Dispatchers.Default, name, Action<Promise> { func(it) })
@@ -98,7 +99,7 @@ class Promise {
         onThen {  }
         onCatch {  }
         mLaunchDispatcher = dispatcher
-        mLaunchAction = Action<Promise> { promise ->
+        mLaunchAction = Action { promise ->
             try {
                 action.run(promise)
             } catch (e: Exception) {
@@ -283,10 +284,10 @@ class Promise {
 
 
     fun onThen(func: (data: Any?) -> Unit): Promise = onThen(Dispatchers.Default, func)
-    fun onThen(dispatcher: PromiseDispatcher, func: (data: Any?) -> Unit): Promise = onThen(dispatcher, Action<Any?> { value -> func(value) })
+    fun onThen(dispatcher: PromiseDispatcher, func: (data: Any?) -> Unit): Promise = onThen(dispatcher, Action { value -> func(value) })
     fun onThen(action: Action<Any?>): Promise = onThen(Dispatchers.Default, action)
     fun onThen(dispatcher: PromiseDispatcher, action: Action<Any?>): Promise {
-        mResolveAction = Action<Any?> { data ->
+        mResolveAction = Action { data ->
             GlobalScope.launch(dispatcher.instance) {
                 try {
                     val result = makeSuccessResult(data)
@@ -303,10 +304,10 @@ class Promise {
 
 
     fun onCatch(func: (err: GlobalResult) -> Unit): Promise = onCatch(Dispatchers.Default, func)
-    fun onCatch(dispatcher: PromiseDispatcher, func: (err: GlobalResult) -> Unit): Promise = onCatch(dispatcher, Action<GlobalResult> { value -> func(value) })
+    fun onCatch(dispatcher: PromiseDispatcher, func: (err: GlobalResult) -> Unit): Promise = onCatch(dispatcher, Action { value -> func(value) })
     fun onCatch(action: Action<GlobalResult>): Promise = onCatch(Dispatchers.Default, action)
     fun onCatch(dispatcher: PromiseDispatcher, action: Action<GlobalResult>): Promise {
-        mRejectAction = Action<GlobalResult> { result ->
+        mRejectAction = Action { result ->
             GlobalScope.launch(dispatcher.instance) {
                 try {
                     action.run(result)
