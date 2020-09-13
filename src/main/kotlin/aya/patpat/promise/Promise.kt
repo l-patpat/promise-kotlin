@@ -133,6 +133,7 @@ class Promise {
         }
         mState = STATE_CLOSE
         mLaunchJob?.cancel()
+        mLaunchJob = null
         mLaunchBlock = {}
         mTimeoutFuture?.cancel(true)
         mTimeoutFuture = null
@@ -220,7 +221,8 @@ class Promise {
                     synchronized(mState) {
                         mFlags.launch = false
                         if (!mFlags.extern && !mFlags.resolve && !mFlags.reject) {
-                            mLaunchJob = null
+                            mState = STATE_RESOLVE
+                            notifyResult(GlobalResult.Success())
                             closeReal()
                         }
                         state = mState
@@ -237,9 +239,8 @@ class Promise {
         if (!await) return null
 
         synchronized(mAwaitLock) {
-            try {
-                mAwaitLock.wait()
-            } catch (e: InterruptedException) {}
+            try { mAwaitLock.wait() }
+            catch (e: InterruptedException) {  }
         }
 
         val result = mResult ?: throw PromiseException(this, GlobalResult.ErrInternal())

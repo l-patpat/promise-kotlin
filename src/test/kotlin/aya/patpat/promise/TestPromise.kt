@@ -292,4 +292,17 @@ class TestPromise {
         }.onCatchLog().launch()
         Thread.sleep(100)
     }
+
+    @Test
+    fun testAsync() {
+        println("testAsync start")
+        Async {
+            Promise().timeout(1000).await()
+            println("testAsync success")
+        }.onCatch { result, promise ->
+            println("${result.result} ${result.msg}")
+        }
+        Thread.sleep(2000)
+        println("testAsync stop")
+    }
 }
