@@ -18,7 +18,7 @@ class Promise {
         private const val STATE_REJECT = 4
         private const val STATE_CLOSE = 5
 
-        private val sIdFactory = IdFactory(12 * 24 * 60 * 60)
+        private val sIdFactory = IdFactory(6 * 24 * 60 * 60)
         private val sTimeoutThreadPool = Executors.newScheduledThreadPool(1)
         private val sPromiseMap = HashMap<Int, Promise>()
 
@@ -83,6 +83,8 @@ class Promise {
     private var mLaunchBlock: suspend CoroutineScope.() -> Unit = {}
     private lateinit var mResolveAction: Action<Any?>
     private lateinit var mRejectAction: Action<GlobalResult>
+    private lateinit var mBeforeResolveAction: Action<Any?>
+    private lateinit var mBeforeRejectAction: Action<GlobalResult>
     private var mResult: GlobalResult? = null
     private val mAwaitLock = Object()
 
@@ -96,7 +98,9 @@ class Promise {
     constructor(dispatcher: PromiseDispatcher, name: String, func: (promise: Promise) -> Unit) : this(dispatcher, name, Action<Promise> { func(it) })
     constructor(dispatcher: PromiseDispatcher, name: String, action: Action<Promise>) {
         nName = name
+        onBeforeThen {  }
         onThen {  }
+        onBeforeCatch {  }
         onCatch {  }
         mLaunchDispatcher = dispatcher
         mLaunchAction = Action { promise ->
@@ -258,7 +262,7 @@ class Promise {
             if (mState != STATE_LAUNCH) return
             mFlags.resolve = true
             mState = STATE_RESOLVE
-            mResolveAction.run(data)
+            mBeforeResolveAction.run(data)
         }
     }
 
@@ -278,11 +282,26 @@ class Promise {
                 return
             }
             mState = STATE_REJECT
-            mRejectAction.run(err)
+            mBeforeRejectAction.run(err)
         }
     }
 
-
+    fun onBeforeThen(func: (data: Any?) -> Unit): Promise = onBeforeThen(Dispatchers.Default, func)
+    fun onBeforeThen(dispatcher: PromiseDispatcher, func: (data: Any?) -> Unit): Promise = onBeforeThen(dispatcher, Action { value -> func(value) })
+    fun onBeforeThen(action: Action<Any?>): Promise = onBeforeThen(Dispatchers.Default, action)
+    fun onBeforeThen(dispatcher: PromiseDispatcher, action: Action<Any?>): Promise {
+        mBeforeResolveAction = Action { data ->
+            GlobalScope.launch(dispatcher.instance) {
+                try {
+                    action.run(data)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                mResolveAction.run(data)
+            }
+        }
+        return this
+    }
     fun onThen(func: (data: Any?) -> Unit): Promise = onThen(Dispatchers.Default, func)
     fun onThen(dispatcher: PromiseDispatcher, func: (data: Any?) -> Unit): Promise = onThen(dispatcher, Action { value -> func(value) })
     fun onThen(action: Action<Any?>): Promise = onThen(Dispatchers.Default, action)
@@ -302,7 +321,22 @@ class Promise {
         return this
     }
 
-
+    fun onBeforeCatch(func: (err: GlobalResult) -> Unit): Promise = onBeforeCatch(Dispatchers.Default, func)
+    fun onBeforeCatch(dispatcher: PromiseDispatcher, func: (err: GlobalResult) -> Unit): Promise = onBeforeCatch(dispatcher, Action { value -> func(value) })
+    fun onBeforeCatch(action: Action<GlobalResult>): Promise = onBeforeCatch(Dispatchers.Default, action)
+    fun onBeforeCatch(dispatcher: PromiseDispatcher, action: Action<GlobalResult>): Promise {
+        mBeforeRejectAction = Action { result ->
+            GlobalScope.launch(dispatcher.instance) {
+                try {
+                    action.run(result)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                mRejectAction.run(result)
+            }
+        }
+        return this
+    }
     fun onCatch(func: (err: GlobalResult) -> Unit): Promise = onCatch(Dispatchers.Default, func)
     fun onCatch(dispatcher: PromiseDispatcher, func: (err: GlobalResult) -> Unit): Promise = onCatch(dispatcher, Action { value -> func(value) })
     fun onCatch(action: Action<GlobalResult>): Promise = onCatch(Dispatchers.Default, action)
@@ -312,7 +346,9 @@ class Promise {
                 try {
                     action.run(result)
                     notifyResult(result)
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
                 close()
             }
         }

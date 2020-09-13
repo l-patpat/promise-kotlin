@@ -63,13 +63,13 @@
       <recent name="P:\Projects\promise-kotlin\src\main\java\aya\patpat\promise\action" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.TestPromise.testCatchLog">
-    <configuration name="TestIdFactory.testRepeat" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+  <component name="RunManager" selected="Gradle.TestPromise.testAll">
+    <configuration name="TestPromise.testAll" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestIdFactory.testRepeat&quot;" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestPromise.testAll&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -83,12 +83,31 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="TestKotlin.test" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestPromise.testBeforeCatch" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestKotlin.test&quot;" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestPromise.testBeforeCatch&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="TestPromise.testBeforeThen" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestPromise.testBeforeThen&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -140,32 +159,13 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="TestPromise.testRetryReject" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestPromise.testRetryReject&quot;" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.TestPromise.testAll" />
+        <item itemvalue="Gradle.TestPromise.testBeforeThen" />
+        <item itemvalue="Gradle.TestPromise.testBeforeCatch" />
         <item itemvalue="Gradle.TestPromise.testCatchLog" />
         <item itemvalue="Gradle.TestPromise.testId" />
-        <item itemvalue="Gradle.TestPromise.testRetryReject" />
-        <item itemvalue="Gradle.TestIdFactory.testRepeat" />
-        <item itemvalue="Gradle.TestKotlin.test" />
       </list>
     </recent_temporary>
   </component>
@@ -180,43 +180,31 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="478" y="114" key="#Project_Structure" timestamp="1590229313688">
-      <screen x="77" y="0" width="1843" height="1080" />
-    </state>
-    <state x="478" y="114" key="#Project_Structure/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590229313688" />
-    <state x="744" y="256" key="#com.intellij.ide.util.MemberChooser" timestamp="1589859061975">
-      <screen x="77" y="0" width="1843" height="1080" />
-    </state>
-    <state x="744" y="256" key="#com.intellij.ide.util.MemberChooser/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1589859061975" />
-    <state x="-671" y="904" width="447" height="486" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1589900008645">
-      <screen x="-1080" y="180" width="1080" height="1920" />
-    </state>
-    <state x="-671" y="904" width="447" height="486" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/77.0.1843.1080/-1080.180.1080.1920@-1080.180.1080.1920" timestamp="1589900008645" />
-    <state x="775" y="407" width="447" height="273" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1589858304879" />
-    <state x="728" y="286" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1590220057622">
-      <screen x="77" y="0" width="1843" height="1080" />
-    </state>
-    <state x="728" y="286" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590220057622" />
-    <state x="465" y="355" key="FileChooserDialogImpl" timestamp="1594700842530">
+    <state x="465" y="355" key="FileChooserDialogImpl" timestamp="1599970314853">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state x="465" y="355" key="FileChooserDialogImpl/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594700842530" />
-    <state width="1800" height="315" key="GridCell.Tab.0.bottom" timestamp="1595844769580">
+    <state x="465" y="355" key="FileChooserDialogImpl/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1599970314853" />
+    <state width="1800" height="315" key="GridCell.Tab.0.bottom" timestamp="1599981447599">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="315" key="GridCell.Tab.0.bottom/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844769580" />
-    <state width="1800" height="315" key="GridCell.Tab.0.center" timestamp="1595844769580">
+    <state width="1800" height="315" key="GridCell.Tab.0.bottom/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1599981447599" />
+    <state width="1800" height="315" key="GridCell.Tab.0.center" timestamp="1599981447598">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="315" key="GridCell.Tab.0.center/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844769580" />
-    <state width="1800" height="315" key="GridCell.Tab.0.left" timestamp="1595844769580">
+    <state width="1800" height="315" key="GridCell.Tab.0.center/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1599981447598" />
+    <state width="1800" height="315" key="GridCell.Tab.0.left" timestamp="1599981447598">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="315" key="GridCell.Tab.0.left/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844769580" />
-    <state width="1800" height="315" key="GridCell.Tab.0.right" timestamp="1595844769580">
+    <state width="1800" height="315" key="GridCell.Tab.0.left/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1599981447598" />
+    <state width="1800" height="315" key="GridCell.Tab.0.right" timestamp="1599981447599">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="315" key="GridCell.Tab.0.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844769580" />
+    <state width="1800" height="315" key="GridCell.Tab.0.right/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1599981447599" />
     <state width="1800" height="364" key="GridCell.Tab.1.bottom" timestamp="1595844579375">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
@@ -236,15 +224,10 @@
     <state x="165" y="175" key="SettingsEditor" timestamp="1598435976850">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state x="-1039" y="784" key="SettingsEditor/77.0.1843.1080/-1080.180.1080.1920@-1080.180.1080.1920" timestamp="1589889314863" />
     <state x="165" y="175" key="SettingsEditor/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1598435976850" />
-    <state x="655" y="250" key="run.anything.popup" timestamp="1590020595871">
+    <state x="700" y="138" width="1106" height="804" key="find.popup" timestamp="1599821105759">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
-    <state x="655" y="250" key="run.anything.popup/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1590020595871" />
-    <state x="661" y="235" width="672" height="678" key="search.everywhere.popup" timestamp="1589860299156">
-      <screen x="77" y="0" width="1843" height="1080" />
-    </state>
-    <state x="661" y="235" width="672" height="678" key="search.everywhere.popup/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1589860299156" />
+    <state x="700" y="138" width="1106" height="804" key="find.popup/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1599821105759" />
   </component>
 </project>

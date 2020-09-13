@@ -14,6 +14,8 @@ class TestPromise {
         testTimeout()
         testRetryResolve()
         testRetryReject()
+        testBeforeThen()
+        testBeforeCatch()
     }
 
     @Test
@@ -193,6 +195,60 @@ class TestPromise {
         Thread.sleep(100)
         println("testRetryReject stop")
         assert(countLaunch == 10 && countThen == 0 && countCatch == 1)
+    }
+
+    @Test
+    fun testBeforeThen() {
+        var record = ""
+
+        var launchTime = 0L
+        var beforeThenTime = 0L
+        var thenTime = 0L
+        Promise {
+            launchTime = System.nanoTime()
+            record += "launch\n"
+            it.resolve()
+        }.onBeforeThen {
+            beforeThenTime = System.nanoTime()
+            record += "onBeforeThen\n"
+        }.onBeforeCatch {
+            record += "onBeforeCatch\n"
+        }.onThen {
+            thenTime = System.nanoTime()
+            record += "onThen\n"
+        }.onCatch {
+            record += "onCatch\n"
+        }.launch()
+
+        val startTime = System.nanoTime()
+        Thread.sleep(100)
+        println("testBeforeThen start\n" + record + "testBeforeThen stop\n")
+        println("launchTime: ${0.000001 * (launchTime - startTime)}ms")
+        println("beforeThenTime: ${0.000001 * (beforeThenTime - launchTime)}ms")
+        println("thenTime: ${0.000001 * (thenTime - beforeThenTime)}ms")
+        assert(record == "launch\nonBeforeThen\nonThen\n")
+    }
+
+    @Test
+    fun testBeforeCatch() {
+        var record = ""
+
+        Promise {
+            record += "launch\n"
+            it.reject()
+        }.onBeforeThen {
+            record += "onBeforeThen\n"
+        }.onBeforeCatch {
+            record += "onBeforeCatch\n"
+        }.onThen {
+            record += "onThen\n"
+        }.onCatch {
+            record += "onCatch\n"
+        }.launch()
+
+        Thread.sleep(100)
+        println("testBeforeCatch start\n" + record + "testBeforeCatch stop\n")
+        assert(record == "launch\nonBeforeCatch\nonCatch\n")
     }
 
     @Test

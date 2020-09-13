@@ -2,14 +2,14 @@ package aya.patpat.promise
 
 import java.security.InvalidParameterException
 
-class IdFactory(private val cycle: Int = 12 * 24 * 60 * 60) {
+class IdFactory(private val cycle: Int = 6 * 24 * 60 * 60) {
 
     private var mLastTime = 0L
     private var mCount = 0
 
     init {
-        if (cycle == 0 || cycle > 0xFFFFF) {
-            throw InvalidParameterException("cycle range is 1-1048575")
+        if (cycle <= 0 || cycle > 0x7FFFF) {
+            throw InvalidParameterException("cycle range is 1-524287")
         }
     }
 
@@ -19,8 +19,9 @@ class IdFactory(private val cycle: Int = 12 * 24 * 60 * 60) {
             mCount++
             mCount = mCount.and(0xFFF)
         } else {
+            mCount = 0
             mLastTime = time
         }
-        return ((time * 4096).and(0xFFFL.inv()) + mCount).toInt()
+        return (time.shl(12).and(0xFFFL.inv()) + mCount).toInt()
     }
 }

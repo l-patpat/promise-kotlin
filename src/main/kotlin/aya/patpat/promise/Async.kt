@@ -2,6 +2,7 @@ package aya.patpat.promise
 
 import aya.patpat.promise.action.AsyncCatchAction
 import aya.patpat.result.GlobalResult
+import aya.patpat.result.GlobalResultException
 import java.lang.Exception
 import java.util.concurrent.Executors
 
@@ -20,6 +21,8 @@ class Async {
                 func()
             } catch (e: PromiseException) {
                 mCatchAction?.run(e.result, e.promise)
+            } catch (e: GlobalResultException) {
+                mCatchAction?.run(e.result, null)
             } catch (e: Exception) {
                 mCatchAction?.run(GlobalResult.ErrInternal(e.message), null)
             }
