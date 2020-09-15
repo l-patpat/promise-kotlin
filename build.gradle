@@ -37,7 +37,7 @@ tasks.withType(Javadoc) {
 }
 
 group 'aya.patpat'
-version '0.0.12' // test branch
+version '0.0.14' // test branch
 
 publish {
     userOrg = 'l-patpat'

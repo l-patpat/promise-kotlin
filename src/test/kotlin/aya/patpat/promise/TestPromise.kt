@@ -297,7 +297,16 @@ class TestPromise {
     fun testAsync() {
         println("testAsync start")
         Async {
-            Promise().timeout(1000).await()
+            Promise("aaa") { promise ->
+                promise.extern()
+                Promise("bbb") {
+                    Thread.sleep(500)
+                    it.resolve()
+                }.onThen {
+                    promise.resolve()
+                    println("testAsync launch")
+                }.launch()
+            }.timeout(1000).await()
             println("testAsync success")
         }.onCatch { result, promise ->
             println("${result.result} ${result.msg}")

@@ -58,22 +58,23 @@ class Promise {
 
     val id = generateId()
 
-    private var nName = ""
+    private var mName = ""
     val name: String
         get() {
-            return nName
+            return mName
         }
 
     private var mAllowRetryTimes = 0
     var retryTimes = 0
         private set
 
-    private object mFlags {
+    class Flags {
         var launch = false
         var extern = false
         var resolve = false
         var reject = false
     }
+    private val mFlags = Flags()
     private var mState = STATE_INIT
     private var mTimeoutFuture: ScheduledFuture<*>? = null
     private var mTimeoutMillis = 0L
@@ -97,7 +98,7 @@ class Promise {
     constructor(dispatcher: PromiseDispatcher, action: Action<Promise>) : this(dispatcher, "", action)
     constructor(dispatcher: PromiseDispatcher, name: String, func: (promise: Promise) -> Unit) : this(dispatcher, name, Action<Promise> { func(it) })
     constructor(dispatcher: PromiseDispatcher, name: String, action: Action<Promise>) {
-        nName = name
+        mName = name
         onBeforeThen {  }
         onThen {  }
         onBeforeCatch {  }
@@ -140,12 +141,13 @@ class Promise {
         sPromiseMap.remove(id)
     }
 
-    fun extern() {
+    fun extern(): Promise {
         synchronized(mState) {
-            if (isFinished()) return
+            if (isFinished()) return this
             sPromiseMap[id] = this
             mFlags.extern = true
         }
+        return this
     }
 
     fun retry(times: Int): Promise {
