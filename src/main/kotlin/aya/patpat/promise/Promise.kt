@@ -209,7 +209,6 @@ class Promise {
 
         if (mAllowRetryTimes < 0) mAllowRetryTimes = 0
         retryTimes = 0
-        mFlags.extern = false
         mLaunchBlock = {
             try {
                 var state: Int
