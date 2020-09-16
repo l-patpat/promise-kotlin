@@ -4,6 +4,7 @@ import aya.patpat.promise.action.Action
 import aya.patpat.result.GlobalResult
 import aya.patpat.result.GlobalResultException
 import kotlinx.coroutines.*
+import java.lang.Runnable
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -86,6 +87,8 @@ class Promise {
     private lateinit var mRejectAction: Action<GlobalResult>
     private lateinit var mBeforeResolveAction: Action<Any?>
     private lateinit var mBeforeRejectAction: Action<GlobalResult>
+    private var mOnCloseBlock = {}
+
     private var mResult: GlobalResult? = null
     private val mAwaitLock = Object()
 
@@ -139,6 +142,7 @@ class Promise {
         mTimeoutFuture?.cancel(true)
         mTimeoutFuture = null
         sPromiseMap.remove(id)
+        mOnCloseBlock()
     }
 
     fun extern(): Promise {
@@ -372,6 +376,18 @@ class Promise {
                 println(sb.toString())
             }
         } else this
+    }
 
+    fun onClose(runnable: Runnable): Promise = onClose(Dispatchers.Default, runnable)
+    fun onClose(dispatcher: PromiseDispatcher, runnable: Runnable): Promise = onClose(dispatcher) { runnable.run() }
+    fun onClose(func: () -> Unit): Promise = onClose(Dispatchers.Default, func)
+    fun onClose(dispatcher: PromiseDispatcher, func: () -> Unit): Promise {
+        mOnCloseBlock = {
+            GlobalScope.launch(dispatcher.instance) {
+                try { func() }
+                catch (e: Exception) { e.printStackTrace() }
+            }
+        }
+        return this
     }
 }

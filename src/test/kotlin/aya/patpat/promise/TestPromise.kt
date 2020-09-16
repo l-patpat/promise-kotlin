@@ -314,4 +314,25 @@ class TestPromise {
         Thread.sleep(2000)
         println("testAsync stop")
     }
+
+    @Test
+    fun testOnClose() {
+        Promise().onClose {
+            println("onClose1")
+        }.launch()
+
+        Promise {
+            it.resolve()
+        }.onClose(Dispatchers.Unconfined) {
+            println("onClose2")
+        }.launch()
+
+        Promise {
+            it.reject()
+        }.onClose(Dispatchers.IO) {
+            println("onClose3")
+        }.launch()
+
+        Thread.sleep(500)
+    }
 }
