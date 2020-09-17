@@ -3,6 +3,8 @@ package aya.patpat.promise
 import aya.patpat.result.GlobalResult
 import org.junit.Test
 import kotlin.math.abs
+import kotlin.math.round
+import kotlin.math.roundToInt
 
 class TestPromise {
 
@@ -319,20 +321,31 @@ class TestPromise {
     fun testOnClose() {
         Promise().onClose {
             println("onClose1")
+        }.onClose {
+            println("onClose11")
         }.launch()
 
         Promise {
             it.resolve()
         }.onClose(Dispatchers.Unconfined) {
             println("onClose2")
+        }.onClose(Dispatchers.Unconfined) {
+            println("onClose22")
         }.launch()
 
         Promise {
             it.reject()
         }.onClose(Dispatchers.IO) {
             println("onClose3")
+        }.onClose(Dispatchers.IO) {
+            println("onClose33")
         }.launch()
 
         Thread.sleep(500)
+    }
+
+    @Test
+    fun testRound() {
+        println(0.4.roundToInt())
     }
 }

@@ -87,7 +87,7 @@ class Promise {
     private lateinit var mRejectAction: Action<GlobalResult>
     private lateinit var mBeforeResolveAction: Action<Any?>
     private lateinit var mBeforeRejectAction: Action<GlobalResult>
-    private var mOnCloseBlock = {}
+    private var mOnCloseBlocks = ArrayList<() -> Unit>()
 
     private var mResult: GlobalResult? = null
     private val mAwaitLock = Object()
@@ -142,7 +142,8 @@ class Promise {
         mTimeoutFuture?.cancel(true)
         mTimeoutFuture = null
         sPromiseMap.remove(id)
-        mOnCloseBlock()
+        mOnCloseBlocks.forEach { it() }
+        mOnCloseBlocks.clear()
     }
 
     fun extern(): Promise {
@@ -382,7 +383,7 @@ class Promise {
     fun onClose(dispatcher: PromiseDispatcher, runnable: Runnable): Promise = onClose(dispatcher) { runnable.run() }
     fun onClose(func: () -> Unit): Promise = onClose(Dispatchers.Default, func)
     fun onClose(dispatcher: PromiseDispatcher, func: () -> Unit): Promise {
-        mOnCloseBlock = {
+        mOnCloseBlocks.add {
             GlobalScope.launch(dispatcher.instance) {
                 try { func() }
                 catch (e: Exception) { e.printStackTrace() }
