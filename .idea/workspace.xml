@@ -63,7 +63,7 @@
       <recent name="P:\Projects\promise-kotlin\src\main\java\aya\patpat\promise\action" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.TestPromise.testRound">
+  <component name="RunManager" selected="Gradle.TestPromise.testAll">
     <configuration name="TestPromise.testAll" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -102,12 +102,12 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="TestPromise.testBeforeThen" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestPromise.testOnClose" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestPromise.testBeforeThen&quot;" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestPromise.testOnClose&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -121,12 +121,12 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="TestPromise.testOnClose" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="TestPromise.testRetryReject" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestPromise.testOnClose&quot;" />
+        <option name="scriptParameters" value="--tests &quot;aya.patpat.promise.TestPromise.testRetryReject&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -161,11 +161,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.TestPromise.testAll" />
+        <item itemvalue="Gradle.TestPromise.testAsync" />
+        <item itemvalue="Gradle.TestPromise.testRetryReject" />
         <item itemvalue="Gradle.TestPromise.testRound" />
         <item itemvalue="Gradle.TestPromise.testOnClose" />
-        <item itemvalue="Gradle.TestPromise.testAsync" />
-        <item itemvalue="Gradle.TestPromise.testAll" />
-        <item itemvalue="Gradle.TestPromise.testBeforeThen" />
       </list>
     </recent_temporary>
   </component>
@@ -189,54 +189,54 @@
     </state>
     <state x="465" y="355" key="FileChooserDialogImpl/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1594700842530" />
     <state x="465" y="355" key="FileChooserDialogImpl/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1599970314853" />
-    <state width="1800" height="315" key="GridCell.Tab.0.bottom" timestamp="1600264914347">
+    <state width="1800" height="263" key="GridCell.Tab.0.bottom" timestamp="1602055831072">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="315" key="GridCell.Tab.0.bottom/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844769580" />
     <state width="1877" height="315" key="GridCell.Tab.0.bottom/77.0.1843.1080/0.1080.1920.1080@0.1080.1920.1080" timestamp="1600213795645" />
-    <state width="1800" height="315" key="GridCell.Tab.0.bottom/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600264914347" />
-    <state width="1800" height="315" key="GridCell.Tab.0.center" timestamp="1600264914347">
+    <state width="1800" height="263" key="GridCell.Tab.0.bottom/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1602055831072" />
+    <state width="1800" height="263" key="GridCell.Tab.0.center" timestamp="1602055831071">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="315" key="GridCell.Tab.0.center/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844769580" />
     <state width="1877" height="315" key="GridCell.Tab.0.center/77.0.1843.1080/0.1080.1920.1080@0.1080.1920.1080" timestamp="1600213795645" />
-    <state width="1800" height="315" key="GridCell.Tab.0.center/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600264914347" />
-    <state width="1800" height="315" key="GridCell.Tab.0.left" timestamp="1600264914347">
+    <state width="1800" height="263" key="GridCell.Tab.0.center/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1602055831071" />
+    <state width="1800" height="263" key="GridCell.Tab.0.left" timestamp="1602055831071">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="315" key="GridCell.Tab.0.left/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844769580" />
     <state width="1877" height="315" key="GridCell.Tab.0.left/77.0.1843.1080/0.1080.1920.1080@0.1080.1920.1080" timestamp="1600213795645" />
-    <state width="1800" height="315" key="GridCell.Tab.0.left/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600264914347" />
-    <state width="1800" height="315" key="GridCell.Tab.0.right" timestamp="1600264914347">
+    <state width="1800" height="263" key="GridCell.Tab.0.left/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1602055831071" />
+    <state width="1800" height="263" key="GridCell.Tab.0.right" timestamp="1602055831071">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="315" key="GridCell.Tab.0.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844769580" />
     <state width="1877" height="315" key="GridCell.Tab.0.right/77.0.1843.1080/0.1080.1920.1080@0.1080.1920.1080" timestamp="1600213795645" />
-    <state width="1800" height="315" key="GridCell.Tab.0.right/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600264914347" />
-    <state width="1877" height="364" key="GridCell.Tab.1.bottom" timestamp="1600213753752">
-      <screen x="0" y="1080" width="1920" height="1080" />
+    <state width="1800" height="263" key="GridCell.Tab.0.right/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1602055831071" />
+    <state width="1877" height="364" key="GridCell.Tab.1.bottom" timestamp="1600345422813">
+      <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="364" key="GridCell.Tab.1.bottom/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844579375" />
     <state width="1877" height="364" key="GridCell.Tab.1.bottom/77.0.1843.1080/0.1080.1920.1080@0.1080.1920.1080" timestamp="1600213753752" />
-    <state width="1800" height="364" key="GridCell.Tab.1.bottom/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600050228460" />
-    <state width="1877" height="364" key="GridCell.Tab.1.center" timestamp="1600213753752">
-      <screen x="0" y="1080" width="1920" height="1080" />
+    <state width="1877" height="364" key="GridCell.Tab.1.bottom/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600345422813" />
+    <state width="1877" height="364" key="GridCell.Tab.1.center" timestamp="1600345422813">
+      <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="364" key="GridCell.Tab.1.center/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844579375" />
     <state width="1877" height="364" key="GridCell.Tab.1.center/77.0.1843.1080/0.1080.1920.1080@0.1080.1920.1080" timestamp="1600213753752" />
-    <state width="1800" height="364" key="GridCell.Tab.1.center/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600050228460" />
-    <state width="1877" height="364" key="GridCell.Tab.1.left" timestamp="1600213753751">
-      <screen x="0" y="1080" width="1920" height="1080" />
+    <state width="1877" height="364" key="GridCell.Tab.1.center/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600345422813" />
+    <state width="1877" height="364" key="GridCell.Tab.1.left" timestamp="1600345422813">
+      <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="364" key="GridCell.Tab.1.left/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844579375" />
     <state width="1877" height="364" key="GridCell.Tab.1.left/77.0.1843.1080/0.1080.1920.1080@0.1080.1920.1080" timestamp="1600213753751" />
-    <state width="1800" height="364" key="GridCell.Tab.1.left/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600050228460" />
-    <state width="1877" height="364" key="GridCell.Tab.1.right" timestamp="1600213753752">
-      <screen x="0" y="1080" width="1920" height="1080" />
+    <state width="1877" height="364" key="GridCell.Tab.1.left/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600345422813" />
+    <state width="1877" height="364" key="GridCell.Tab.1.right" timestamp="1600345422813">
+      <screen x="77" y="0" width="1843" height="1080" />
     </state>
     <state width="1800" height="364" key="GridCell.Tab.1.right/77.0.1843.1080/-1080.180.1080.1920@77.0.1843.1080" timestamp="1595844579375" />
     <state width="1877" height="364" key="GridCell.Tab.1.right/77.0.1843.1080/0.1080.1920.1080@0.1080.1920.1080" timestamp="1600213753752" />
-    <state width="1800" height="364" key="GridCell.Tab.1.right/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600050228460" />
+    <state width="1877" height="364" key="GridCell.Tab.1.right/77.0.1843.1080/0.1080.1920.1080@77.0.1843.1080" timestamp="1600345422813" />
     <state x="165" y="175" key="SettingsEditor" timestamp="1598435976850">
       <screen x="77" y="0" width="1843" height="1080" />
     </state>

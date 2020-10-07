@@ -240,13 +240,18 @@ class Promise {
                 reject(GlobalResult.ErrInternal(e.message.toString()))
             }
         }
-        mLaunchJob = GlobalScope.launch(mLaunchDispatcher.instance, CoroutineStart.DEFAULT, mLaunchBlock)
+        val job = GlobalScope.launch(mLaunchDispatcher.instance, CoroutineStart.LAZY, mLaunchBlock)
+        mLaunchJob = job
 
-        if (!await) return null
-
-        synchronized(mAwaitLock) {
-            try { mAwaitLock.wait() }
-            catch (e: InterruptedException) {  }
+        if (await) {
+            synchronized(mAwaitLock) {
+                job.start()
+                try { mAwaitLock.wait() }
+                catch (e: InterruptedException) {  }
+            }
+        } else {
+            job.start()
+            return null
         }
 
         val result = mResult ?: throw PromiseException(this, GlobalResult.ErrInternal())

@@ -299,6 +299,11 @@ class TestPromise {
     fun testAsync() {
         println("testAsync start")
         Async {
+            println(Thread.currentThread().name)
+            for (i in 0..100) {
+                Promise { it.resolve() }.await()
+                println(i)
+            }
             Promise("aaa") { promise ->
                 promise.extern()
                 Promise("bbb") {
