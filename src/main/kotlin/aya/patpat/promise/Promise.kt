@@ -110,6 +110,8 @@ class Promise {
         mLaunchAction = Action { promise ->
             try {
                 action.run(promise)
+            } catch (e: GlobalResultException) {
+                reject(e.result)
             } catch (e: Exception) {
                 reject(GlobalResult.ErrInternal(e.message.toString()))
             }
@@ -215,30 +217,24 @@ class Promise {
         if (mAllowRetryTimes < 0) mAllowRetryTimes = 0
         retryTimes = 0
         mLaunchBlock = {
-            try {
-                var state: Int
-                do {
-                    startTimeoutCount()
-                    mState = STATE_LAUNCH
-                    mFlags.resolve = false
-                    mFlags.reject = false
-                    mFlags.launch = true
-                    mLaunchAction.run(this@Promise)
-                    synchronized(mState) {
-                        mFlags.launch = false
-                        if (!mFlags.extern && !mFlags.resolve && !mFlags.reject) {
-                            mState = STATE_RESOLVE
-                            notifyResult(GlobalResult.Success())
-                            closeReal()
-                        }
-                        state = mState
+            var state: Int
+            do {
+                startTimeoutCount()
+                mState = STATE_LAUNCH
+                mFlags.resolve = false
+                mFlags.reject = false
+                mFlags.launch = true
+                mLaunchAction.run(this@Promise)
+                synchronized(mState) {
+                    mFlags.launch = false
+                    if (!mFlags.extern && !mFlags.resolve && !mFlags.reject) {
+                        mState = STATE_RESOLVE
+                        notifyResult(GlobalResult.Success())
+                        closeReal()
                     }
-                } while (state == STATE_RETRY)
-            } catch (e: GlobalResultException) {
-                reject(e.result)
-            } catch (e: Exception) {
-                reject(GlobalResult.ErrInternal(e.message.toString()))
-            }
+                    state = mState
+                }
+            } while (state == STATE_RETRY)
         }
         val job = GlobalScope.launch(mLaunchDispatcher.instance, CoroutineStart.LAZY, mLaunchBlock)
         mLaunchJob = job

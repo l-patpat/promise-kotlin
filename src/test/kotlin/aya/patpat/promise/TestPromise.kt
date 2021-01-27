@@ -1,6 +1,7 @@
 package aya.patpat.promise
 
 import aya.patpat.result.GlobalResult
+import aya.patpat.result.GlobalResultException
 import org.junit.Test
 import kotlin.math.abs
 import kotlin.math.round
@@ -13,6 +14,7 @@ class TestPromise {
         testDoNothing()
         testResolve()
         testReject()
+        testException()
         testTimeout()
         testRetryResolve()
         testRetryReject()
@@ -100,6 +102,31 @@ class TestPromise {
         Thread.sleep(100)
         println("testReject stop")
         assert(countLaunch == 1 && countThen == 0 && countCatch == 1)
+    }
+
+    @Test
+    fun testException() {
+        println("testException start")
+
+        var countLaunch = 0
+        var countThen = 0
+        var countCatch = 0
+        var result = ""
+
+        Promise {
+            countLaunch++
+            throw GlobalResultException(GlobalResult.Cancel())
+        }.onThen {
+            countThen++
+        }.onCatch {
+            countCatch++
+            result = it.result
+            println("onCatch result:${it.result}")
+        }.launch()
+
+        Thread.sleep(500)
+        println("testException stop")
+        assert(countLaunch == 1 && countThen == 0 && countCatch == 1 && result == GlobalResult.CANCEL)
     }
 
     @Test
@@ -315,7 +342,7 @@ class TestPromise {
                 }.launch()
             }.timeout(1000).await()
             println("testAsync success")
-        }.onCatch { result, promise ->
+        }.onCatch { result, _ ->
             println("${result.result} ${result.msg}")
         }
         Thread.sleep(2000)
