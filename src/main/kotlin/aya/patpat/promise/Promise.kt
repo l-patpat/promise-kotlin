@@ -19,7 +19,9 @@ class Promise {
         private const val STATE_REJECT = 4
         private const val STATE_CLOSE = 5
 
-        private val sIdFactory = IdFactory(6 * 24 * 60 * 60)
+        @JvmStatic
+        val runtimeId = RuntimeId(6 * 24 * 60 * 60)
+
         private val sTimeoutThreadPool = Executors.newScheduledThreadPool(1)
         private val sPromiseMap = HashMap<Int, Promise>()
 
@@ -170,7 +172,7 @@ class Promise {
     private fun generateId(): Int {
         var id: Int
         do {
-            id = sIdFactory.generate()
+            id = runtimeId.generate()
         } while (sPromiseMap[id] != null)
         return id
     }
