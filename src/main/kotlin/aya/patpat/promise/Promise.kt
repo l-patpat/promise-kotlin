@@ -1,17 +1,26 @@
 package aya.patpat.promise
 
 import aya.patpat.promise.action.Action
-import aya.patpat.result.GlobalResult
-import aya.patpat.result.GlobalResultException
+import aya.patpat.promise.action.ActionCatch
+import aya.patpat.promise.action.ActionPromise
+import aya.patpat.promise.action.ActionThen
 import kotlinx.coroutines.*
 import java.lang.Runnable
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
-class Promise {
+open class Promise {
 
     companion object {
+        var defaultLaunchDispatcher: PromiseDispatcher = Dispatchers.IO
+        var defaultThenDispatcher: PromiseDispatcher = Dispatchers.Main
+        var defaultCatchDispatcher: PromiseDispatcher = Dispatchers.Main
+        var defaultProgressDispatcher: PromiseDispatcher = Dispatchers.Main
+        var defaultCloseDispatcher: PromiseDispatcher = Dispatchers.Main
+
         private const val STATE_INIT = 0
         private const val STATE_LAUNCH = 1
         private const val STATE_RETRY = 2
@@ -26,9 +35,9 @@ class Promise {
         private val sPromiseMap = HashMap<Int, Promise>()
 
         @JvmStatic
-        inline fun <reified T : Any>parseData(result: GlobalResult?): T? {
+        inline fun <reified T : Any>parseData(result: PromiseResult?): T? {
             result ?: return null
-            if (result !is GlobalResult.SuccessWith<*>) return null
+            if (result !is PromiseResult.SuccessWith<*>) return null
             return parseData(result.data)
         }
 
@@ -40,23 +49,10 @@ class Promise {
         }
 
         @JvmStatic
-        fun handleResult(result: GlobalResult.Normal<*>) {
-            if (result.isSuccess) {
-                resolve(result.id.toInt(), result.data)
-            } else {
-                reject(result.id.toInt(), result)
-            }
-        }
+        fun resolve(id: Int, data: Any? = null) = sPromiseMap[id]?.resolve(data)
 
         @JvmStatic
-        fun resolve(id: Int, data: Any? = null) {
-            sPromiseMap[id]?.resolve(data)
-        }
-
-        @JvmStatic
-        fun reject(id: Int, err: GlobalResult) {
-            sPromiseMap[id]?.reject(err)
-        }
+        fun reject(id: Int, err: PromiseResult) = sPromiseMap[id]?.reject(err)
     }
 
     val id = generateId()
@@ -72,50 +68,45 @@ class Promise {
         private set
 
     class Flags {
-        var launch = false
-        var extern = false
-        var resolve = false
-        var reject = false
+        var started = false
+        var sync = false
+        var resolved = false
+        var rejected = false
     }
     private val mFlags = Flags()
     private var mState = STATE_INIT
     private var mTimeoutFuture: ScheduledFuture<*>? = null
     private var mTimeoutMillis = 0L
-    private val mLaunchAction: Action<Promise>
+    private val mLaunchFunc: (promise: Promise) -> Unit
     private val mLaunchDispatcher: PromiseDispatcher
     private var mLaunchJob: Job? = null
     private var mLaunchBlock: suspend CoroutineScope.() -> Unit = {}
-    private lateinit var mResolveAction: Action<Any?>
-    private lateinit var mRejectAction: Action<GlobalResult>
-    private lateinit var mBeforeResolveAction: Action<Any?>
-    private lateinit var mBeforeRejectAction: Action<GlobalResult>
-    private var mOnCloseBlocks = ArrayList<() -> Unit>()
+    private val mOnThenBlocks = ArrayList<(PromiseResult) -> Deferred<PromiseResult>>()
+    private val mOnCatchBlocks = ArrayList<(PromiseResult) -> Deferred<Any?>>()
+    private var mOnProgressBlocks = ArrayList<(PromiseProgress) -> Deferred<Any?>>()
+    private var mOnCloseBlocks = ArrayList<() -> Deferred<Unit>>()
+    private var mProgressQueue = ArrayList<PromiseProgress>()
 
-    private var mResult: GlobalResult? = null
+    private var mResult: PromiseResult? = null
     private val mAwaitLock = Object()
 
-    constructor() : this(Dispatchers.Default, "", Action<Promise> { })
-    constructor(func: (promise: Promise) -> Unit) : this(Dispatchers.Default, "", Action<Promise> { func(it) })
-    constructor(action: Action<Promise>) : this(Dispatchers.Default, "", action)
-    constructor(name: String, func: (promise: Promise) -> Unit) : this(Dispatchers.Default, name, Action<Promise> { func(it) })
-    constructor(name: String, action: Action<Promise>) : this(Dispatchers.Default, name, action)
-    constructor(dispatcher: PromiseDispatcher, func: (promise: Promise) -> Unit) : this(dispatcher, "", Action<Promise> { func(it) })
-    constructor(dispatcher: PromiseDispatcher, action: Action<Promise>) : this(dispatcher, "", action)
-    constructor(dispatcher: PromiseDispatcher, name: String, func: (promise: Promise) -> Unit) : this(dispatcher, name, Action<Promise> { func(it) })
-    constructor(dispatcher: PromiseDispatcher, name: String, action: Action<Promise>) {
+    constructor(action: ActionPromise) : this(defaultLaunchDispatcher, "", { action.run(it) })
+    constructor(func: (promise: Promise) -> Unit) : this(defaultLaunchDispatcher, "", func)
+    constructor(name: String, action: ActionPromise) : this(defaultLaunchDispatcher, name, { action.run(it) })
+    constructor(name: String, func: (promise: Promise) -> Unit) : this(defaultLaunchDispatcher, name, func)
+    constructor(dispatcher: PromiseDispatcher, action: ActionPromise) : this(dispatcher, "", { action.run(it) })
+    constructor(dispatcher: PromiseDispatcher, func: (promise: Promise) -> Unit) : this(dispatcher, "", func)
+    constructor(dispatcher: PromiseDispatcher, name: String, action: ActionPromise): this(dispatcher, name, { action.run(it) })
+    constructor(dispatcher: PromiseDispatcher, name: String, func: (promise: Promise) -> Unit) {
         mName = name
-        onBeforeThen {  }
-        onThen {  }
-        onBeforeCatch {  }
-        onCatch {  }
         mLaunchDispatcher = dispatcher
-        mLaunchAction = Action { promise ->
+        mLaunchFunc = { promise ->
             try {
-                action.run(promise)
-            } catch (e: GlobalResultException) {
+                func(promise)
+            } catch (e: PromiseException) {
                 reject(e.result)
             } catch (e: Exception) {
-                reject(GlobalResult.ErrInternal(e.message.toString()))
+                reject(PromiseResult.ErrInternal(e.message))
             }
         }
     }
@@ -137,7 +128,7 @@ class Promise {
         when (mState) {
             STATE_CLOSE -> return
             STATE_RESOLVE, STATE_REJECT -> {}
-            else -> notifyResult(GlobalResult.Abort())
+            else -> notifyResult(PromiseResult.Abort())
         }
         mState = STATE_CLOSE
         mLaunchJob?.cancel()
@@ -146,17 +137,14 @@ class Promise {
         mTimeoutFuture?.cancel(true)
         mTimeoutFuture = null
         sPromiseMap.remove(id)
-        mOnCloseBlocks.forEach { it() }
-        mOnCloseBlocks.clear()
-    }
-
-    fun extern(): Promise {
-        synchronized(mState) {
-            if (isFinished()) return this
-            sPromiseMap[id] = this
-            mFlags.extern = true
+        mOnThenBlocks.clear()
+        mOnCatchBlocks.clear()
+        GlobalScope.launch {
+            for (it in mOnCloseBlocks) {
+                it().await()
+            }
+            mOnCloseBlocks.clear()
         }
-        return this
     }
 
     fun retry(times: Int): Promise {
@@ -177,14 +165,14 @@ class Promise {
         return id
     }
 
-    private fun makeSuccessResult(data: Any?): GlobalResult {
+    private fun makeSuccessResult(data: Any?): PromiseResult {
         return when (data) {
-            null -> GlobalResult.Success()
-            else -> GlobalResult.SuccessWith(data)
+            null, Unit -> PromiseResult.Success()
+            else -> PromiseResult.SuccessWith(data)
         }
     }
 
-    private fun notifyResult(result: GlobalResult) {
+    private fun notifyResult(result: PromiseResult) {
         mResult = result
         synchronized(mAwaitLock) {
             mAwaitLock.notify()
@@ -196,24 +184,30 @@ class Promise {
         mTimeoutFuture = when {
             mTimeoutMillis > 0 -> {
                 sTimeoutThreadPool.schedule({
-                    reject(GlobalResult.Timeout())
+                    reject(PromiseResult.Timeout())
                 }, mTimeoutMillis, TimeUnit.MILLISECONDS)
             }
             else -> null
         }
     }
 
+    fun launch() = launch(false)
+    fun launch(await: Boolean): Any? {
+        mFlags.sync = true
+        if (await && mLaunchDispatcher.type == PromiseDispatcher.TYPE_UNCONFINED) {
+            throw PromiseException(this, PromiseResult.Failure("禁止在 Dispatchers.Unconfined 中使用 await"))
+        }
+        return start(await)
+    }
     fun await(): Any? {
-        if (mLaunchDispatcher.type == PromiseDispatcher.TYPE_UNCONFINED) throw PromiseException(this, GlobalResult.Failure("禁止在 Dispatchers.Unconfined 中使用 await"))
-        return launch(true)
+        if (mLaunchDispatcher.type == PromiseDispatcher.TYPE_UNCONFINED) {
+            throw PromiseException(this, PromiseResult.Failure("禁止在 Dispatchers.Unconfined 中使用 await"))
+        }
+        return start(true)
     }
-
-    fun launch() {
-        launch(false)
-    }
-
-    private fun launch(await: Boolean): Any? {
-        if (mState != STATE_INIT) throw PromiseException(this, GlobalResult.Failure("重复操作"))
+    fun start() = start(false)
+    private fun start(await: Boolean): Any? {
+        if (mState != STATE_INIT) throw PromiseException(this, PromiseResult.Failure("重复操作"))
         mState = STATE_LAUNCH
 
         if (mAllowRetryTimes < 0) mAllowRetryTimes = 0
@@ -223,15 +217,16 @@ class Promise {
             do {
                 startTimeoutCount()
                 mState = STATE_LAUNCH
-                mFlags.resolve = false
-                mFlags.reject = false
-                mFlags.launch = true
-                mLaunchAction.run(this@Promise)
+                mFlags.resolved = false
+                mFlags.rejected = false
+                mFlags.started = true
+                if (!mFlags.sync) sPromiseMap[id] = this@Promise
+                mLaunchFunc(this@Promise)
                 synchronized(mState) {
-                    mFlags.launch = false
-                    if (!mFlags.extern && !mFlags.resolve && !mFlags.reject) {
+                    mFlags.started = false
+                    if (mFlags.sync && !mFlags.resolved && !mFlags.rejected) {
                         mState = STATE_RESOLVE
-                        notifyResult(GlobalResult.Success())
+                        notifyResult(PromiseResult.Success())
                         closeReal()
                     }
                     state = mState
@@ -252,38 +247,41 @@ class Promise {
             return null
         }
 
-        val result = mResult ?: throw PromiseException(this, GlobalResult.ErrInternal())
+        val result = mResult ?: throw PromiseException(this, PromiseResult.ErrInternal())
         if (!result.isSuccess) throw PromiseException(this, result)
         return parseData(result)
     }
-
-    private fun shouldLaunch(): Boolean {
-        synchronized(mState) {
-            if (isFinished()) return false
-            mState = STATE_LAUNCH
-            return true
-        }
-    }
-
 
     fun resolve() = resolve(null)
     fun resolve(data: Any?) {
         synchronized(mState) {
             if (mState != STATE_LAUNCH) return
-            mFlags.resolve = true
+            mFlags.resolved = true
             mState = STATE_RESOLVE
-            mBeforeResolveAction.run(data)
+            GlobalScope.launch {
+                var result = makeSuccessResult(data)
+                for (it in mOnThenBlocks) {
+                    result = it(result).await()
+                    if (!result.`is`(PromiseResult.SUCCESS)) {
+                        reject(result)
+                        return@launch
+                    }
+                }
+                notifyResult(result)
+                close()
+            }
         }
     }
 
-    fun reject() = reject(GlobalResult.Failure())
-    fun reject(err: GlobalResult) {
+    fun reject() = reject(PromiseResult.Failure())
+    fun reject(result: String, msg: String) = reject(PromiseResult(result, msg))
+    fun reject(result: PromiseResult) {
         synchronized(mState) {
             if (mState != STATE_LAUNCH) return
-            mFlags.resolve = true
+            mFlags.resolved = true
             if (retryTimes < mAllowRetryTimes) {
                 retryTimes++
-                if (mFlags.launch) {
+                if (mFlags.started) {
                     mState = STATE_RETRY
                 } else {
                     mState = STATE_LAUNCH
@@ -292,74 +290,78 @@ class Promise {
                 return
             }
             mState = STATE_REJECT
-            mBeforeRejectAction.run(err)
-        }
-    }
-
-    fun onBeforeThen(func: (data: Any?) -> Unit): Promise = onBeforeThen(Dispatchers.Default, func)
-    fun onBeforeThen(dispatcher: PromiseDispatcher, func: (data: Any?) -> Unit): Promise = onBeforeThen(dispatcher, Action { value -> func(value) })
-    fun onBeforeThen(action: Action<Any?>): Promise = onBeforeThen(Dispatchers.Default, action)
-    fun onBeforeThen(dispatcher: PromiseDispatcher, action: Action<Any?>): Promise {
-        mBeforeResolveAction = Action { data ->
-            GlobalScope.launch(dispatcher.instance) {
-                try {
-                    action.run(data)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+            GlobalScope.launch {
+                for (it in mOnCatchBlocks) {
+                    it(result).await()
                 }
-                mResolveAction.run(data)
-            }
-        }
-        return this
-    }
-    fun onThen(func: (data: Any?) -> Unit): Promise = onThen(Dispatchers.Default, func)
-    fun onThen(dispatcher: PromiseDispatcher, func: (data: Any?) -> Unit): Promise = onThen(dispatcher, Action { value -> func(value) })
-    fun onThen(action: Action<Any?>): Promise = onThen(Dispatchers.Default, action)
-    fun onThen(dispatcher: PromiseDispatcher, action: Action<Any?>): Promise {
-        mResolveAction = Action { data ->
-            GlobalScope.launch(dispatcher.instance) {
-                try {
-                    val result = makeSuccessResult(data)
-                    action.run(data)
-                    notifyResult(result)
-                    close()
-                } catch (e: Exception) {
-                    reject(GlobalResult.ErrInternal(e.message.toString()))
-                }
-            }
-        }
-        return this
-    }
-
-    fun onBeforeCatch(func: (err: GlobalResult) -> Unit): Promise = onBeforeCatch(Dispatchers.Default, func)
-    fun onBeforeCatch(dispatcher: PromiseDispatcher, func: (err: GlobalResult) -> Unit): Promise = onBeforeCatch(dispatcher, Action { value -> func(value) })
-    fun onBeforeCatch(action: Action<GlobalResult>): Promise = onBeforeCatch(Dispatchers.Default, action)
-    fun onBeforeCatch(dispatcher: PromiseDispatcher, action: Action<GlobalResult>): Promise {
-        mBeforeRejectAction = Action { result ->
-            GlobalScope.launch(dispatcher.instance) {
-                try {
-                    action.run(result)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-                mRejectAction.run(result)
-            }
-        }
-        return this
-    }
-    fun onCatch(func: (err: GlobalResult) -> Unit): Promise = onCatch(Dispatchers.Default, func)
-    fun onCatch(dispatcher: PromiseDispatcher, func: (err: GlobalResult) -> Unit): Promise = onCatch(dispatcher, Action { value -> func(value) })
-    fun onCatch(action: Action<GlobalResult>): Promise = onCatch(Dispatchers.Default, action)
-    fun onCatch(dispatcher: PromiseDispatcher, action: Action<GlobalResult>): Promise {
-        mRejectAction = Action { result ->
-            GlobalScope.launch(dispatcher.instance) {
-                try {
-                    action.run(result)
-                    notifyResult(result)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                notifyResult(result)
                 close()
+            }
+        }
+    }
+
+    fun progress(progress: Int) = progress(PromiseProgress(progress, null))
+    fun progress(progress: Int, result: String) = progress(PromiseProgress(progress, PromiseResult(result)))
+    fun progress(progress: Int, result: String, msg: String) = progress(PromiseProgress(progress, PromiseResult(result, msg)))
+    fun progress(progress: Int, result: PromiseResult?) = progress(PromiseProgress(progress, result))
+    fun progress(progress: PromiseProgress) {
+        var isEmpty: Boolean
+        synchronized(mProgressQueue) {
+            isEmpty = mProgressQueue.isEmpty()
+            mProgressQueue.add(progress)
+        }
+        if (isEmpty) {
+            GlobalScope.launch {
+                while (true) {
+                    var p: PromiseProgress? = null
+                    synchronized(mProgressQueue) {
+                        if (mProgressQueue.isNotEmpty()) {
+                            p = mProgressQueue[0]
+                        }
+                    }
+                    p ?: break
+                    for (it in mOnProgressBlocks) {
+                        it(p!!).await()
+                    }
+                    synchronized(mProgressQueue) {
+                        mProgressQueue.remove(p!!)
+                    }
+                }
+            }
+        }
+    }
+
+    fun onThen(action: ActionThen) = onThen(defaultThenDispatcher) { data, resolve -> action.run(data, resolve) }
+    fun onThen(func: (data: Any?, resolve: (data: Any?) -> Unit) -> Unit) = onThen(defaultThenDispatcher, func)
+    fun onThen(dispatcher: PromiseDispatcher, action: ActionThen) = onThen(dispatcher) { data, resolve -> action.run(data, resolve) }
+    fun onThen(dispatcher: PromiseDispatcher, func: (data: Any?, resolve: (data: Any?) -> Unit) -> Unit): Promise {
+        mOnThenBlocks.add { result ->
+            GlobalScope.async(dispatcher.instance) {
+                try {
+                    var res = result
+                    val data = if (res is PromiseResult.SuccessWith<*>) res.data else null
+                    func(data) {
+                        res = makeSuccessResult(it)
+                    }
+                    res
+                } catch (e: PromiseException) {
+                    e.result
+                } catch (e: Exception) {
+                    PromiseResult.ErrInternal(e.message.toString())
+                }
+            }
+        }
+        return this
+    }
+
+    fun onCatch(action: ActionCatch) = onCatch(defaultCatchDispatcher) { action.run(it) }
+    fun onCatch(func: (result: PromiseResult) -> Unit) = onCatch(defaultCatchDispatcher, func)
+    fun onCatch(dispatcher: PromiseDispatcher, action: ActionCatch) = onCatch(dispatcher) { action.run(it) }
+    fun onCatch(dispatcher: PromiseDispatcher, func: (err: PromiseResult) -> Unit): Promise {
+        mOnCatchBlocks.add { result ->
+            GlobalScope.async(dispatcher.instance) {
+                try { func(result) }
+                catch (e: Exception) { e.printStackTrace() }
             }
         }
         return this
@@ -371,9 +373,8 @@ class Promise {
                 val sb = StringBuilder()
                 sb.appendln()
                 sb.appendln("----------------------------------------")
-                sb.appendln("<promise: ${if (name.isEmpty()) hashCode().toString(16) else name }>")
+                sb.appendln("<promise: id: $id name: ${if (name.isBlank()) "<empty>" else name}>")
                 sb.appendln("onCatch")
-                sb.appendln("resultId: ${it.id}")
                 sb.appendln("result: ${it.result}")
                 sb.appendln("msg: ${it.msg}")
                 sb.appendln("----------------------------------------")
@@ -382,12 +383,25 @@ class Promise {
         } else this
     }
 
-    fun onClose(runnable: Runnable): Promise = onClose(Dispatchers.Default, runnable)
-    fun onClose(dispatcher: PromiseDispatcher, runnable: Runnable): Promise = onClose(dispatcher) { runnable.run() }
-    fun onClose(func: () -> Unit): Promise = onClose(Dispatchers.Default, func)
+    fun onProgress(action: Action<PromiseProgress>) = onProgress(defaultProgressDispatcher) { action.run(it) }
+    fun onProgress(func: (PromiseProgress) -> Unit) = onProgress(defaultProgressDispatcher, func)
+    fun onProgress(dispatcher: PromiseDispatcher, action: Action<PromiseProgress>) = onProgress(dispatcher) { action.run(it) }
+    fun onProgress(dispatcher: PromiseDispatcher, func: (PromiseProgress) -> Unit): Promise {
+        mOnProgressBlocks.add { progress ->
+            GlobalScope.async(dispatcher.instance) {
+                try { func(progress) }
+                catch (e: Exception) { e.printStackTrace() }
+            }
+        }
+        return this
+    }
+
+    fun onClose(runnable: Runnable) = onClose(defaultCloseDispatcher, runnable)
+    fun onClose(dispatcher: PromiseDispatcher, runnable: Runnable) = onClose(dispatcher) { runnable.run() }
+    fun onClose(func: () -> Unit) = onClose(defaultCloseDispatcher, func)
     fun onClose(dispatcher: PromiseDispatcher, func: () -> Unit): Promise {
         mOnCloseBlocks.add {
-            GlobalScope.launch(dispatcher.instance) {
+            GlobalScope.async(dispatcher.instance) {
                 try { func() }
                 catch (e: Exception) { e.printStackTrace() }
             }

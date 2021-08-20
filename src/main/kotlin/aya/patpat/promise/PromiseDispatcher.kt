@@ -1,6 +1,7 @@
 package aya.patpat.promise
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class PromiseDispatcher(val type: String = TYPE_DEFAULT) {
     companion object {
@@ -10,6 +11,7 @@ class PromiseDispatcher(val type: String = TYPE_DEFAULT) {
         @JvmStatic val TYPE_UNCONFINED = "Unconfined"
     }
 
+    @ExperimentalCoroutinesApi
     val instance: CoroutineDispatcher
         get() {
             return when (type) {
