@@ -87,7 +87,7 @@ open class Promise {
     private var mOnCloseBlocks = ArrayList<() -> Deferred<Unit>>()
     private var mProgressQueue = ArrayList<PromiseProgress>()
 
-    private var mResult: PromiseResult? = null
+    open var mResult: PromiseResult? = null
     private val mAwaitLock = Object()
 
     constructor(action: ActionPromise) : this(defaultLaunchDispatcher, "", { action.run(it) })
@@ -165,7 +165,7 @@ open class Promise {
         return id
     }
 
-    private fun makeSuccessResult(data: Any?): PromiseResult {
+    open fun makeSuccessResult(data: Any?): PromiseResult {
         return when (data) {
             null, Unit -> PromiseResult.Success()
             else -> PromiseResult.SuccessWith(data)
@@ -199,14 +199,18 @@ open class Promise {
         }
         return start(await)
     }
-    fun await(): Any? {
-        if (mLaunchDispatcher.type == PromiseDispatcher.TYPE_UNCONFINED) {
-            throw PromiseException(this, PromiseResult.Failure("禁止在 Dispatchers.Unconfined 中使用 await"))
-        }
-        return start(true)
-    }
+    fun await() = start(true)
     fun start() = start(false)
     private fun start(await: Boolean): Any? {
+        if (await) {
+            if (this is PromiseResolve || this is PromiseReject) {
+                val result = mResult ?: throw PromiseException(this, PromiseResult.ErrInternal())
+                if (!result.isSuccess) throw PromiseException(this, result)
+                return parseData(result)
+            } else if (mLaunchDispatcher.type == PromiseDispatcher.TYPE_UNCONFINED) {
+                throw PromiseException(this, PromiseResult.Failure("禁止在 Dispatchers.Unconfined 中使用 await"))
+            }
+        }
         if (mState != STATE_INIT) throw PromiseException(this, PromiseResult.Failure("重复操作"))
         mState = STATE_LAUNCH
 

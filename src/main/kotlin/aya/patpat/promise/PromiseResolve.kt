@@ -6,5 +6,7 @@ class PromiseResolve : Promise {
     constructor(name: String, data: Any?): this(Dispatchers.Unconfined, name, data)
     constructor(dispatcher: PromiseDispatcher): this(dispatcher, "", null)
     constructor(dispatcher: PromiseDispatcher, data: Any?): this(dispatcher, "", data)
-    constructor(dispatcher: PromiseDispatcher, name: String, data: Any?): super(dispatcher, name, { it.resolve(data) })
+    constructor(dispatcher: PromiseDispatcher, name: String, data: Any?): super(dispatcher, name, { it.resolve(data) }) {
+        mResult = makeSuccessResult(data)
+    }
 }

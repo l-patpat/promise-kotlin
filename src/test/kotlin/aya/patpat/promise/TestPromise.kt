@@ -18,6 +18,8 @@ class TestPromise {
         testLaunch()
         testResolve()
         testReject()
+        testPromiseResolve()
+        testPromiseReject()
         testException()
         testTimeout()
         testRetryResolve()
@@ -108,6 +110,32 @@ class TestPromise {
         Thread.sleep(100)
         println("testReject stop")
         assert(countLaunch == 1 && countThen == 0 && countCatch == 1)
+    }
+
+    @Test
+    fun testPromiseResolve() {
+        Async {
+            val a = PromiseResolve().await()
+            println(a)
+            val b = PromiseResolve(123).await()
+            println(b)
+            val c = PromiseResolve("abc").await()
+            println(c)
+            Thread.sleep(100)
+            assert(a == null && b == 123 && c == "abc")
+        }
+    }
+
+    @Test
+    fun testPromiseReject() {
+        Async {
+            PromiseReject(PromiseResult.NOTHING, "nothing").await()
+            assert(false)
+        }.onCatch { result, promise ->
+            println(result)
+            assert(result.`is`(PromiseResult.NOTHING))
+        }
+        Thread.sleep(100)
     }
 
     @Test

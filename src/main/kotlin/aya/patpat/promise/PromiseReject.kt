@@ -10,5 +10,7 @@ class PromiseReject : Promise {
     constructor(dispatcher: PromiseDispatcher, result: PromiseResult?): this(dispatcher, "", result)
     constructor(dispatcher: PromiseDispatcher, name: String, result: String): this(dispatcher, name, PromiseResult(result, ""))
     constructor(dispatcher: PromiseDispatcher, name: String, result: String, msg: String): this(dispatcher, name, PromiseResult(result, msg))
-    constructor(dispatcher: PromiseDispatcher, name: String, result: PromiseResult?): super(dispatcher, name, { it.reject(result ?: PromiseResult.Failure()) })
+    constructor(dispatcher: PromiseDispatcher, name: String, result: PromiseResult?): super(dispatcher, name, { it.reject(result ?: PromiseResult.Failure()) }) {
+        mResult = result ?: PromiseResult.Failure()
+    }
 }
