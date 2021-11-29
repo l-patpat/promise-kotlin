@@ -268,6 +268,7 @@ class TestPromise {
         var launchTime = 0L
         var thenTime1 = 0L
         var thenTime2 = 0L
+        var thenTime3 = 0L
         val startTime = System.nanoTime()
         Promise {
             launchTime = System.nanoTime()
@@ -277,8 +278,11 @@ class TestPromise {
             thenTime1 = System.nanoTime()
             record += "onThen$data\n"
             resolve(2)
-        }.onThen { data, _ ->
+        }.onThen { data ->
             thenTime2 = System.nanoTime()
+            record += "onThen$data\n"
+        }.onThen { data ->
+            thenTime3 = System.nanoTime()
             record += "onThen$data\n"
         }.onCatch {
             record += "onCatch1\n"
@@ -291,7 +295,8 @@ class TestPromise {
         println("launchTime: ${0.000001 * (launchTime - startTime)}ms")
         println("thenTime1: ${0.000001 * (thenTime1 - launchTime)}ms")
         println("thenTime2: ${0.000001 * (thenTime2 - thenTime1)}ms")
-        assert(record == "launch\nonThen1\nonThen2\n")
+        println("thenTime3: ${0.000001 * (thenTime3 - thenTime2)}ms")
+        assert(record == "launch\nonThen1\nonThen2\nonThen2\n")
     }
 
     @Test

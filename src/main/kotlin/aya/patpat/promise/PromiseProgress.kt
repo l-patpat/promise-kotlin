@@ -1,3 +1,3 @@
 package aya.patpat.promise
 
-data class PromiseProgress(val progress: Int, val result: PromiseResult?)
+data class PromiseProgress(val progress: Int, val result: PromiseResult?, val data: Any? = null)

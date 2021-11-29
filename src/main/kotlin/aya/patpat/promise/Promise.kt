@@ -1,9 +1,6 @@
 package aya.patpat.promise
 
-import aya.patpat.promise.action.Action
-import aya.patpat.promise.action.ActionCatch
-import aya.patpat.promise.action.ActionPromise
-import aya.patpat.promise.action.ActionThen
+import aya.patpat.promise.action.*
 import kotlinx.coroutines.*
 import java.lang.Runnable
 import java.util.concurrent.Executors
@@ -11,6 +8,9 @@ import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+
+typealias FuncThen = (data: Any?) -> Unit
+typealias NextFuncThen = (data: Any?, next: FuncThen) -> Unit
 
 open class Promise {
 
@@ -335,10 +335,14 @@ open class Promise {
         }
     }
 
-    fun onThen(action: ActionThen) = onThen(defaultThenDispatcher) { data, resolve -> action.run(data, resolve) }
-    fun onThen(func: (data: Any?, resolve: (data: Any?) -> Unit) -> Unit) = onThen(defaultThenDispatcher, func)
-    fun onThen(dispatcher: PromiseDispatcher, action: ActionThen) = onThen(dispatcher) { data, resolve -> action.run(data, resolve) }
-    fun onThen(dispatcher: PromiseDispatcher, func: (data: Any?, resolve: (data: Any?) -> Unit) -> Unit): Promise {
+    fun onThen(action: ActionThen) = onThen(defaultThenDispatcher, NextActionThen { data, next -> action.run(data); next.run(data) })
+    fun onThen(action: NextActionThen) = onThen(defaultThenDispatcher, action)
+    fun onThen(func: FuncThen) = onThen(defaultThenDispatcher) { data, next -> func(data); next(data) }
+    fun onThen(func: NextFuncThen) = onThen(defaultThenDispatcher, func)
+    fun onThen(dispatcher: PromiseDispatcher, action: ActionThen) = onThen(dispatcher, NextActionThen { data, next -> action.run(data); next.run(data) })
+    fun onThen(dispatcher: PromiseDispatcher, action: NextActionThen) = onThen(dispatcher) { data, next -> action.run(data) { next(data) } }
+    fun onThen(dispatcher: PromiseDispatcher, func: FuncThen) = onThen(dispatcher) { data, next -> func(data); next(data) }
+    fun onThen(dispatcher: PromiseDispatcher, func: NextFuncThen): Promise {
         mOnThenBlocks.add { result ->
             GlobalScope.async(dispatcher.instance) {
                 try {

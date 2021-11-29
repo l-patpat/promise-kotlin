@@ -5,6 +5,7 @@ class PromiseReject : Promise {
     constructor(result: String): this(Dispatchers.Unconfined, "", PromiseResult(result, ""))
     constructor(result: String, msg: String): this(Dispatchers.Unconfined, "", PromiseResult(result, msg))
     constructor(name: String, result: String, msg: String): this(Dispatchers.Unconfined, name, PromiseResult(result, msg))
+    constructor(name: String, result: PromiseResult): this(Dispatchers.Unconfined, name, result)
     constructor(dispatcher: PromiseDispatcher): this(dispatcher, "", null)
     constructor(dispatcher: PromiseDispatcher, result: String): this(dispatcher, "", PromiseResult(result, ""))
     constructor(dispatcher: PromiseDispatcher, result: PromiseResult?): this(dispatcher, "", result)

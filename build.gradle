@@ -36,4 +36,4 @@ tasks.withType(Javadoc) {
 }
 
 group 'aya.patpat'
-version '0.1.0' // test branch
+version '0.1.1' // test branch
